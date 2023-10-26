@@ -1,35 +1,13 @@
-# w_client
+# W project spa
 
-This template should help get you started developing with Vue 3 in Vite.
+### Проект реализован лишь частично и не является итоговым результатом
 
-## Recommended IDE Setup
+<i>Что должен из себя представлять: spa для проекта W</i>
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+### Чтобы установить проект выполните ряд действий:
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+1. Склонируйте репозиторий ``` git clone ссылка_на_этот_репозиторий . ```
+2. Установите зависимости ``` npm install ```
+3. Создайте файл настроек конфигурации .env ``` cp .env.example .env ```
+4. При необходимости обновите настройки настройки маршрута api в файле .env
+5. Запустите приложение ``` npm run dev ```
