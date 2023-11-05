@@ -29,7 +29,7 @@
     --fz-smaller: 12px;
 }
 
-body {
+body{
     width: 100%;
     min-height: 100vh;
     height: 100%;
@@ -38,7 +38,7 @@ body {
     color: var(--clr-text);
 }
 
-body.dark-theme {
+body[color-scheme=dark] {
     --clr-background: #252525;
     --clr-background-alt: #181818;
     --clr-text: #f8f9fa;

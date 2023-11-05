@@ -14,16 +14,27 @@
         <li>
           <RouterLink to="/profile/update" class="dropdown-item">Изменить данные</RouterLink>
         </li>
-        <li><span class="dropdown-item" @click="toggleTheme">Сменить тему</span></li>
+        <li><span class="dropdown-item" @click="toggleDark()">Сменить тему</span></li>
         <li>
           <button class="dropdown-item" @click="logout">Выйти</button>
         </li>
       </ul>
     </div>
 
-    <RouterLink to="/login" class="user-icon" v-else>
-      <UserAvatarIcon/>
-    </RouterLink>
+    <div class="dropdown" v-else>
+      <div class="user-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <UserAvatarIcon/>
+      </div>
+      <ul class="dropdown-menu border-0 box-shadow px-0 dropdown-menu-end">
+        <li>
+          <RouterLink to="/login" class="dropdown-item">Авторизация</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/register" class="dropdown-item">Регистрация</RouterLink>
+        </li>
+        <li><span class="dropdown-item" @click="toggleDark()">Сменить тему</span></li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -32,13 +43,18 @@ import {useUserStore} from "@/stores/user";
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 import NotificationIcon from "@/components/icons/NotificationIcon.vue";
 import {useRouter} from "vue-router";
+import {useDark, useToggle} from "@vueuse/core";
+
+const isDark = useDark({
+  selector: "body",
+  attribute: "color-scheme",
+  valueDark: "dark",
+  valueLight: "light",
+});
+const toggleDark = useToggle(isDark);
 
 const userStore = useUserStore();
 const router = useRouter();
-
-const toggleTheme = () => {
-  document.body.classList.toggle("dark-theme");
-};
 
 const logout = async () => {
   const res = await userStore.logout();

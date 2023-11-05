@@ -7,7 +7,7 @@ import Toaster from "@/components/Toaster.vue";
 <template>
   <Header/>
   <RouterView/>
-  <Toaster />
+  <Toaster/>
   <Footer/>
 </template>
 
