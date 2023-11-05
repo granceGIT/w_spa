@@ -32,7 +32,7 @@
 }
 
 .btn-primary:hover {
-    background-color: var(--clr-light);
+    background-color: var(--clr-background  );
     color: var(--clr-primary);
     transform: translate(-2px, -2px);
     border-color: var(--clr-primary);
@@ -40,7 +40,7 @@
 }
 
 .btn-primary:active {
-    background-color: var(--clr-light) !important;
+    background-color: var(--clr-background) !important;
     color: var(--clr-primary) !important;
     border-color: var(--clr-primary) !important;
     transform: translate(0px, 0px);
@@ -193,7 +193,7 @@ svg>g.fill_muted *{
         --fz-main: 12px;
         --fz-larger: 14px;
         --fz-extra-large: 16px;
-        --fz-small: 10px;
+        --fz-smaller: 10px;
     }
 }
 
@@ -212,6 +212,6 @@ svg>g.fill_muted *{
         --fz-main: 10px;
         --fz-larger: 12px;
         --fz-extra-large: 14px;
-        --fz-small: 8px;
+        --fz-smaller: 8px;
     }
 }

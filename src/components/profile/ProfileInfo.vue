@@ -27,7 +27,7 @@ const props = defineProps({
 const userInfo = [
   {
     title: "Дата рождения",
-    subtitle: format(new Date(props.user.birthdate), "dd.MM.yyyy"),
+    subtitle: props.user.birthdate && format(new Date(props.user.birthdate), "dd.MM.yyyy"),
     icon: DateIcon,
   },
   {

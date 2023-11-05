@@ -11,7 +11,7 @@ export default class ErrorHandler {
                 const err = e.response.data.error;
                 toastStore.createToast({
                     title: "Произошла ошибка",
-                    text: err.message,
+                    text: err.message || "Неизвестная ошибка",
                     type,
                 });
             } else {

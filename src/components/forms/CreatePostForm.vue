@@ -1,10 +1,14 @@
 <template>
-  <form action="#" @submit.prevent="createPostRequest" enctype="multipart/form-data" class="create-post-form">
+  <form action="#" @submit.prevent="validate" enctype="multipart/form-data" class="create-post-form">
     <div class="create-post-header d-flex gap-3">
       <div class="create-post-profile-image">
         <UserAvatarIcon/>
       </div>
-      <textarea class="create-post-input" id="new-post-text" name="new-post-text" v-model="content"
+      <textarea class="create-post-input"
+                :class="{'is-invalid':v$.content.$error}"
+                id="new-post-text"
+                name="new-post-text"
+                v-model="content"
                 placeholder="Расскажите как ваши дела?"></textarea>
     </div>
     <div class="create-post-footer d-flex justify-content-between">
@@ -27,18 +31,42 @@
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 import {useUserStore} from "@/stores/user";
 import {usePostStore} from "@/stores/post";
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import {required} from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import {useToasterStore} from "@/stores/toaster";
 
 const userStore = useUserStore();
 const postStore = usePostStore();
+const toastStore = useToasterStore();
 const content = ref("");
+const $externalResults = ref({});
+
+const rules = computed(() => ({
+  content: {
+    required,
+  },
+}));
+
+const v$ = useVuelidate(rules, {content}, {$externalResults});
+
+async function validate() {
+  v$.value.$clearExternalResults();
+  if (!await v$.value.$validate()) return;
+  const res = await createPostRequest();
+  if (res === true) {
+    v$.value.$reset();
+    resetForm();
+    toastStore.success({text: "Запись добавлена"});
+  }
+  $externalResults.value = res.errors ?? [];
+}
 
 const createPostRequest = async () => {
-  await postStore.create({
+  return await postStore.create({
     userId: userStore.user.id,
     content: content.value,
   });
-  resetForm();
 };
 
 const resetForm = () => {
@@ -62,6 +90,10 @@ const resetForm = () => {
   border-radius: 5px 5px 5px 0px;
   max-height: 20ch;
   min-height: 10ch;
+}
+
+.create-post-input.is-invalid {
+  border: 1px solid var(--bs-danger);
 }
 
 .create-post-attachment {

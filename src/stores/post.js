@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import ErrorHandler from "@/handlers/ErrorHandler";
 import PostService from "@/services/PostService";
+import ReactionService from "@/services/ReactionService";
 
 export const usePostStore = defineStore("post", {
     state: () => ({
@@ -12,6 +13,17 @@ export const usePostStore = defineStore("post", {
                 const {userId, content, attachments, communityId} = payload;
                 await PostService.create(userId, content, attachments, communityId);
                 await this.updatePosts({userId});
+                return true;
+            } catch (e) {
+                ErrorHandler.handle(e);
+            }
+        },
+        async updatePost(id) {
+            try {
+                const resp = await PostService.fetchPost(id);
+                // изменить информацию о посте в store
+                this.posts = this.posts.map(post => post.id === resp.data.id ? resp.data : post);
+                return true;
             } catch (e) {
                 ErrorHandler.handle(e);
             }
@@ -33,12 +45,19 @@ export const usePostStore = defineStore("post", {
                 ErrorHandler.handle(e);
             }
         },
-        async deletePost(payload) {
+        async deletePost(id) {
             try {
-                const {id} = payload;
                 await PostService.deletePost(id);
                 this.posts = this.posts.filter(post => post.id !== id);
                 return true;
+            } catch (e) {
+                ErrorHandler.handle(e);
+            }
+        },
+        async setReaction(payload) {
+            try {
+                const {id, reactionId, type} = payload;
+                return await ReactionService.setReaction(id, reactionId, type);
             } catch (e) {
                 ErrorHandler.handle(e);
             }

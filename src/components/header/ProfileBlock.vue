@@ -1,13 +1,13 @@
 <template>
   <div class="profile-manage ms-auto d-flex gap-1 align-items-center">
-    <div class="notification-icon">
+    <div class="notification-icon" v-if="userStore.isAuthenticated">
       <NotificationIcon/>
     </div>
     <div class="dropdown" v-if="userStore.isAuthenticated">
       <div class="user-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <UserAvatarIcon/>
       </div>
-      <ul class="dropdown-menu dropdown-menu-end">
+      <ul class="dropdown-menu border-0 box-shadow px-0 dropdown-menu-end">
         <li>
           <RouterLink :to="`/users/${userStore.user.id}`" class="dropdown-item">Профиль</RouterLink>
         </li>

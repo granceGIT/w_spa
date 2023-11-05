@@ -33,8 +33,10 @@
       {{ props.post.content }}
     </div>
     <div class="post-footer d-flex justify-content-between">
-      <Reactions :setReactions="props.post.set_reactions" :reactions="props.post.reactions" :id="props.post.id"
-                 type="post"/>
+      <Reactions :reactions="props.post.reactions"
+                 :id="props.post.id"
+                 type="post"
+      />
     </div>
   </div>
 </template>
@@ -45,13 +47,10 @@ import {formatDistance} from "date-fns";
 import ru from "date-fns/locale/ru";
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 import {useUserStore} from "@/stores/user";
-import {usePostStore} from "@/stores/post";
-import {useToasterStore} from "@/stores/toaster";
 
 const userStore = useUserStore();
-const postStore = usePostStore();
-const toastStore = useToasterStore();
 
+const emit = defineEmits(["update", "delete"]);
 const props = defineProps({
   post: {
     type: Object,
@@ -64,11 +63,8 @@ const dateDiff = formatDistance(new Date(props.post.created_at), new Date(), {
   locale: ru,
 });
 
-const deletePost = async () => {
-  const res = await postStore.deletePost(props.post);
-  if (res) {
-    toastStore.success({text: "Запись удалена"});
-  }
+const deletePost = () => {
+  emit("delete", props.post.id);
 };
 </script>
 

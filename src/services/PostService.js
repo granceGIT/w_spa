@@ -20,6 +20,10 @@ export default class PostService {
         return api.get(`/posts`);
     }
 
+    static async fetchPost(id) {
+        return api.get(`/posts/${id}`);
+    }
+
     static async deletePost(id) {
         return api.delete(`/posts/${id}`);
     }

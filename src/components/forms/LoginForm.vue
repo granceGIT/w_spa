@@ -1,6 +1,6 @@
 <template>
   <section class="page-section auth-section">
-    <form action="#" @submit.prevent="loginRequest" class="auth-form d-flex flex-column gap-3" novalidate>
+    <form action="#" @submit.prevent="validate" class="auth-form d-flex flex-column gap-3" novalidate>
       <div class="form-header">
         <div class="form-header-title text-center">Авторизация</div>
         <div class="form-header-subtitle text-center">
@@ -9,25 +9,38 @@
       </div>
       <div class="form-content">
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.login}" placeholder="Логин" id="login"
-                 name="login" v-model="login"
+          <input type="text" class="form-control" :class="{'is-invalid':v$.login.$error}" placeholder="Логин"
+                 id="login"
+                 name="login"
+                 v-model="login"
+                 @blur="v$.login.$touch"
                  required>
           <label for="login">Логин</label>
-          <p class="invalid-text" v-if="errors.login">{{ errors.login.join(";\n") }}</p>
+          <div class="client-errors">
+            <p class="invalid-text" v-if="v$.login.$error && v$.login.required.$invalid">Поле логин обязательно для
+              заполнения</p>
+          </div>
+          <div class="server-errors" v-if="$externalResults.login ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.login" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="password" class="form-control" :class="{'is-invalid':!!errors.password}" placeholder="Пароль"
-                 id="password" v-model="password"
-                 name="password" required>
+          <input type="password" class="form-control" :class="{'is-invalid':v$.password.$error}" placeholder="Пароль"
+                 id="password"
+                 v-model="password"
+                 name="password"
+                 @blur="v$.password.$touch"
+                 required>
           <label for="password">Пароль</label>
-          <p class="invalid-text" v-if="errors.password">{{ errors.password.join(";\n") }}</p>
+          <div class="client-errors">
+            <p class="invalid-text mb-1 p-0" v-if="v$.password.$error && v$.password.required.$invalid">Поле пароль
+              обязательно для заполнения</p>
+          </div>
+          <div class="server-errors" v-if="$externalResults.password ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.password" :key="error">{{ error }}</p>
+          </div>
         </div>
-        <div class="form-check mt-3">
-          <input type="checkbox" class="form-check-input" id="agreement" checked
-                 name="agreement">
-          <label for="agreement" class="form-check-label">Я согласен с правилами
-            ресурса</label>
-        </div>
+
       </div>
       <div class="form-footer d-flex flex-column gap-2">
         <button type="submit" class="btn btn-primary">Войти</button>
@@ -51,31 +64,49 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useUserStore} from "@/stores/user";
 import {useRouter} from "vue-router";
+import {required} from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const userStore = useUserStore();
 const router = useRouter();
 
 const login = ref("");
 const password = ref("");
-const errors = ref({});
+const $externalResults = ref({});
+
+const rules = computed(() => ({
+  login: {
+    required,
+  },
+  password: {
+    required,
+  },
+}));
+
+const v$ = useVuelidate(rules, {login, password}, {$externalResults});
+
+async function validate() {
+  v$.value.$clearExternalResults();
+  if (!await v$.value.$validate()) return;
+  const res = await loginRequest();
+  if (res === true) {
+    v$.value.$reset();
+    resetForm();
+    await router.push('/');
+  }
+  $externalResults.value = res.errors ?? [];
+}
 
 const loginRequest = async () => {
-  const res = await userStore.loginRequest({login: login.value, password: password.value});
-  if (res === true) {
-    resetForm();
-    await router.push("/");
-  } else {
-    errors.value = res.errors;
-  }
+  return await userStore.loginRequest({login: login.value, password: password.value});
 };
 
 const resetForm = () => {
   login.value = "";
   password.value = "";
-  errors.value = {};
 };
 </script>
 
@@ -98,5 +129,12 @@ const resetForm = () => {
 
 .auth-form p.invalid-text {
   color: var(--bs-danger-text-emphasis);
+}
+
+.auth-form .server-errors,
+.auth-form .client-errors {
+  margin: 0;
+  padding: 0;
+  font-size: var(--fz-smaller);
 }
 </style>

@@ -1,86 +1,141 @@
 <template>
   <section class="page-section auth-section">
-    <form action="#" @submit.prevent="updateProfileData" class="auth-form d-flex flex-column gap-3" novalidate>
+    <form action="#" @submit.prevent="validate" class="auth-form d-flex flex-column gap-3" novalidate>
       <div class="form-header">
         <div class="form-header-title text-center">Изменение данных профиля</div>
       </div>
       <div class="form-content">
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.name}" placeholder="Имя" id="name"
-                 name="name" v-model="name"
+          <input type="text" class="form-control" :class="{'is-invalid':v$.name.$error}" placeholder="Имя"
+                 id="name"
+                 name="name"
+                 v-model="name"
+                 @blur="v$.name.$touch"
                  required>
           <label for="name">Имя</label>
-          <p class="invalid-text" v-if="errors.name">{{ errors.name.join(";\n") }}</p>
+          <div class="client-errors">
+            <p class="invalid-text" v-if="v$.name.$error && v$.name.required.$invalid">Поле имя обязательно для
+              заполнения</p>
+          </div>
+          <div class="server-errors" v-if="$externalResults.name ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.name" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.surname}" placeholder="Фамилия"
+          <input type="text" class="form-control" :class="{'is-invalid':v$.surname.$error}" placeholder="Фамилия"
                  id="surname"
-                 name="surname" v-model="surname"
+                 name="surname"
+                 v-model="surname"
+                 @blur="v$.surname.$touch"
                  required>
           <label for="surname">Фамилия</label>
-          <p class="invalid-text" v-if="errors.surname">{{ errors.surname.join(";\n") }}</p>
+          <div class="client-errors">
+            <p class="invalid-text" v-if="v$.surname.$error && v$.surname.required.$invalid">Поле фамилия обязательно
+              для заполнения</p>
+          </div>
+          <div class="server-errors" v-if="$externalResults.surname ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.surname" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="date" class="form-control" :class="{'is-invalid':!!errors.birthdate}" placeholder="Дата рождения"
+          <input type="date" class="form-control" :class="{'is-invalid':$externalResults.birthdate}"
+                 placeholder="Дата рождения"
                  id="birthdate"
-                 name="birthdate" v-model="birthdate"
+                 name="birthdate"
+                 v-model="birthdate"
                  required>
           <label for="birthdate">Дата рождения</label>
-          <p class="invalid-text" v-if="errors.birthdate">{{ errors.birthdate.join(";\n") }}</p>
+          <div class="server-errors" v-if="$externalResults.birthdate ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.birthdate" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.status}" placeholder="Статус"
+          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.status}" placeholder="Статус"
                  id="status"
-                 name="status" v-model="status"
-          >
+                 name="status"
+                 v-model="status"
+                 required>
           <label for="status">Статус</label>
-          <p class="invalid-text" v-if="errors.status">{{ errors.status.join(";\n") }}</p>
+          <div class="server-errors" v-if="$externalResults.status ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.status" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.job}" placeholder="Профессия" id="job"
-                 name="job" v-model="job"
-          >
+          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.job}" placeholder="Профессия"
+                 id="job"
+                 name="job"
+                 v-model="job"
+                 required>
           <label for="job">Профессия</label>
-          <p class="invalid-text" v-if="errors.job">{{ errors.job.join(";\n") }}</p>
+          <div class="server-errors" v-if="$externalResults.job ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.job" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.education}" placeholder="Образование"
+          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.education}"
+                 placeholder="Образование"
                  id="education"
-                 name="education" v-model="education"
-          >
+                 name="education"
+                 v-model="education"
+                 required>
           <label for="education">Образование</label>
-          <p class="invalid-text" v-if="errors.education">{{ errors.education.join(";\n") }}</p>
+          <div class="server-errors" v-if="$externalResults.education ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.education" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.country}" placeholder="Страна"
+          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.country}" placeholder="Страна"
                  id="country"
-                 name="country" v-model="country"
-          >
+                 name="country"
+                 v-model="country"
+                 required>
           <label for="country">Страна</label>
-          <p class="invalid-text" v-if="errors.country">{{ errors.country.join(";\n") }}</p>
+          <div class="server-errors" v-if="$externalResults.country ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.country" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':!!errors.city}" placeholder="Город" id="city"
-                 name="city" v-model="city"
-          >
+          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.city}" placeholder="Город"
+                 id="city"
+                 name="city"
+                 v-model="city"
+                 required>
           <label for="city">Город</label>
-          <p class="invalid-text" v-if="errors.city">{{ errors.city.join(";\n") }}</p>
+          <div class="server-errors" v-if="$externalResults.city ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.city" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="password" class="form-control" :class="{'is-invalid':!!errors.new_password}"
+          <input type="password" class="form-control" :class="{'is-invalid':v$.new_password.$error}"
                  placeholder="Новый пароль"
-                 id="new_password" v-model="new_password"
-                 name="new_password">
+                 id="new_password"
+                 name="new_password"
+                 v-model="new_password"
+                 required>
           <label for="new_password">Новый пароль</label>
-          <p class="invalid-text" v-if="errors.new_password">{{ errors.new_password.join(";\n") }}</p>
+          <div class="client-errors">
+            <p class="invalid-text mb-1 p-0" v-if="v$.new_password.$error && v$.new_password.minLength.$invalid">
+              Минимальная длина пароля 5 символов</p>
+          </div>
+          <div class="server-errors" v-if="$externalResults.new_password ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.new_password" :key="error">{{ error }}</p>
+          </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="password" class="form-control" :class="{'is-invalid':!!errors.password}"
-                 placeholder="Пароль для подтверждения"
-                 id="password" v-model="password"
-                 name="password" required>
-          <label for="password">Пароль для подтверждения</label>
-          <p class="invalid-text" v-if="errors.password">{{ errors.password.join(";\n") }}</p>
+          <input type="password" class="form-control" :class="{'is-invalid':v$.password.$error}" placeholder="Пароль"
+                 id="password"
+                 v-model="password"
+                 name="password"
+                 @blur="v$.password.$touch"
+                 required>
+          <label for="password">Пароль</label>
+          <div class="client-errors">
+            <p class="invalid-text mb-1 p-0" v-if="v$.password.$error && v$.password.required.$invalid">Поле пароль
+              обязательно для заполнения</p>
+          </div>
+          <div class="server-errors" v-if="$externalResults.password ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.password" :key="error">{{ error }}</p>
+          </div>
         </div>
       </div>
       <div class="form-footer d-flex flex-column gap-2 align-items-end">
@@ -92,8 +147,11 @@
 
 <script setup>
 import {useUserStore} from "@/stores/user";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useToasterStore} from "@/stores/toaster";
+import {minLength, required} from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import {minLen} from "@/validators/password";
 
 const userStore = useUserStore();
 const toastStore = useToasterStore();
@@ -108,17 +166,44 @@ const country = ref(userStore.user.country);
 const city = ref(userStore.user.city);
 const new_password = ref("");
 const password = ref("");
-const errors = ref({});
+const $externalResults = ref({});
 
+const rules = computed(() => ({
+  name: {
+    required,
+  },
+  surname: {
+    required,
+  },
+  new_password: {
+    minLength: minLength(minLen),
+  },
+  password: {
+    required,
+  },
+}));
+
+const v$ = useVuelidate(rules, {name, surname, password, new_password}, {$externalResults});
+
+async function validate() {
+  v$.value.$clearExternalResults();
+  if (!await v$.value.$validate()) return;
+  const res = await updateProfileData();
+  if (res === true) {
+    v$.value.$reset();
+    resetForm();
+    toastStore.success({text: "Ваши данные обновлены!"});
+  }
+  $externalResults.value = res.errors ?? [];
+}
 
 /*
 * TODO: Необходимо реализовать валидацию всех форм (Логин,Регистрация,Создание поста,Изменение данных)
-* TODO: возможно с вынесением формы и полей в отдельные компоненты
-* TODO: либо создание хуков useField и useForm и связывание с полями и формой
+* TODO: добавить валидацию изображения после создания инструмента загрузки изображений
 */
 
 const updateProfileData = async () => {
-  const res = await userStore.updateData({
+  return await userStore.updateData({
     name: name.value,
     surname: surname.value,
     birthdate: birthdate.value,
@@ -130,12 +215,6 @@ const updateProfileData = async () => {
     new_password: new_password.value,
     password: password.value,
   });
-  if (res === true) {
-    resetForm();
-    toastStore.success({text: "Ваши данные обновлены!"});
-  } else {
-    errors.value = res.errors;
-  }
 };
 
 const resetForm = () => {

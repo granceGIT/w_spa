@@ -5,8 +5,8 @@ export default class AuthService {
         return api.post("/login", {login, password});
     }
 
-    static async register(name, surname, login, password) {
-        return api.post("/register", {name, surname, login, password});
+    static async register(name, surname, login, password, passwordConfirmation) {
+        return api.post("/register", {name, surname, login, password, passwordConfirmation});
     }
 
     static async logout() {

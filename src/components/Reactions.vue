@@ -1,19 +1,21 @@
 <template>
   <div class="post-footer-reactions d-flex gap-3">
-    <p class="reaction-item" @click="setReactionRequest(reaction.id)"
-       :class="{'active':userStore.isAuthenticated && currentReaction(reaction.id).find(el=>el.user_id===userStore.user.id)}"
-       v-for="reaction in reactions" :key="reaction.id">
+    <p class="reaction-item"
+       :class="{active:reaction.my_reaction}"
+       v-for="reaction in reactions"
+       :key="reaction.id"
+       @click="setReaction(reaction.id)">
       <span class="hidden-visually">{{ reaction.name }}</span>
       <img :src="reaction.url" :alt="reaction.name" class="reaction-icon">
-      <span class="reaction-count">{{ currentReaction(reaction.id).length }}</span>
+      <span class="reaction-count">{{ reaction.count }}</span>
     </p>
   </div>
 </template>
 
 <script setup>
 import {useUserStore} from "@/stores/user";
-import ReactionService from "@/services/ReactionService";
-import ErrorHandler from "@/handlers/ErrorHandler";
+import {validateReactionType} from "@/validators/reactions";
+import {usePostStore} from "@/stores/post";
 import {ref} from "vue";
 
 const userStore = useUserStore();
@@ -22,36 +24,28 @@ const props = defineProps({
     required: true,
     type: Number,
   },
-  setReactions: {
-    type: Array,
-  },
   reactions: {
     type: Array,
   },
   type: {
     required: true,
-    validator(value) {
-      // Типы для реакций
-      return ["post", "comment", "image"].includes(value);
-    },
+    validator: validateReactionType,
   },
 });
-
-const setReactions = ref(props.setReactions);
 const reactions = ref(props.reactions);
+const postStore = usePostStore();
 
-const currentReaction = id => setReactions.value.filter(r => r.reaction_id === id);
-const setReactionRequest = async (id) => {
-  try {
-    if (userStore.isAuthenticated) {
-      const resp = await ReactionService.setReaction(props.id, id, props.type);
-      reactions.value = resp.data.reactions;
-      setReactions.value = resp.data.set_reactions;
-    }
-  } catch (e) {
-    ErrorHandler.handle(e);
+const setReaction = async (id) => {
+  if (userStore.isAuthenticated) {
+    const res = await postStore.setReaction({
+      id: props.id,
+      reactionId: id,
+      type: props.type,
+    });
+    if (res) reactions.value = res.data.reactions;
   }
 };
+
 </script>
 
 <style scoped>

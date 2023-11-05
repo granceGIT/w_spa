@@ -27,8 +27,8 @@ export const useUserStore = defineStore("user", {
         },
         async registerRequest(payload) {
             try {
-                const {name, surname, login, password} = payload;
-                const resp = await AuthService.register(name, surname, login, password);
+                const {name, surname, login, password, passwordConfirmation} = payload;
+                const resp = await AuthService.register(name, surname, login, password, passwordConfirmation);
                 localStorage.setItem("token", resp.data.token);
                 this.user = resp.data.user;
                 return true;
