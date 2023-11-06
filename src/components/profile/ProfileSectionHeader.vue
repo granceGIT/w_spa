@@ -1,6 +1,9 @@
 <template>
   <div class="profile-header-image">
-    <UserAvatarIcon/>
+    <div class="user-image">
+      <img v-if="props.user.image" :src="props.user.image" alt="Изображение профиля" class="img-cover">
+      <UserAvatarIcon v-else/>
+    </div>
   </div>
   <div class="profile-header-info d-flex flex-column">
     <h2 class="profile-header-title">{{ props.user.name }} {{ props.user.surname }}</h2>
@@ -30,9 +33,8 @@ const props = defineProps({
   font-size: var(--fz-extra-large);
 }
 
-.profile-header-image {
+.user-image{
   width: 5rem;
   height: 5rem;
-  padding: 0;
 }
 </style>

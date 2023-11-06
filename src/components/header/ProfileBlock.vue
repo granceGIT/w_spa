@@ -4,8 +4,9 @@
       <NotificationIcon/>
     </div>
     <div class="dropdown" v-if="userStore.isAuthenticated">
-      <div class="user-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <UserAvatarIcon/>
+      <div class="user-image" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img v-if="userStore.user.image" :src="userStore.user.image" alt="Изображение профиля" class="img-cover">
+        <UserAvatarIcon v-else/>
       </div>
       <ul class="dropdown-menu border-0 box-shadow px-0 dropdown-menu-end">
         <li>
@@ -69,24 +70,5 @@ const logout = async () => {
   width: 2.5rem;
   height: 2.2rem;
   cursor: pointer;
-}
-
-.user-icon {
-  width: 3rem;
-  height: 3rem;
-  cursor: pointer;
-}
-
-.dropdown-menu {
-  background-color: var(--clr-background);
-  color: var(--clr-text);
-}
-
-.dropdown-item {
-  color: var(--clr-text);
-}
-
-.dropdown-item:hover {
-  background-color: var(--clr-background-alt);
 }
 </style>

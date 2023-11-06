@@ -18,13 +18,12 @@ import SearchResults from "@/components/header/SearchResults.vue";
 import {ref} from "vue";
 import UserService from "@/services/UserService";
 import ErrorHandler from "@/handlers/ErrorHandler";
-import {onClickOutside} from "@vueuse/core";
+import {onClickOutside, useDebounceFn} from "@vueuse/core";
 
 const searchResults = ref([]);
 const searchForm = ref(null);
 const searchResultsVisible = ref(false);
 const search = ref("");
-const timeout = ref(null);
 
 onClickOutside(searchForm, () => {
   searchResultsVisible.value = false;
@@ -34,21 +33,21 @@ const handleFocus = () => {
   searchResultsVisible.value = true;
 };
 
-const updateSearch = async () => {
-  if (timeout.value) {
-    clearTimeout(timeout.value);
-  }
-  timeout.value = setTimeout(async () => {
-    try {
-      if (search.value) {
-        const resp = await UserService.search(search.value);
-        searchResults.value = resp.data;
-      }
-    } catch (e) {
-      ErrorHandler.handle(e);
+const searchRequest = async () => {
+  try {
+    if (search.value) {
+      const resp = await UserService.search(search.value);
+      searchResults.value = resp.data;
     }
-  }, 1000);
+  } catch (e) {
+    ErrorHandler.handle(e);
+  }
 };
+
+// Задержка 0.5сек. перед выполнением запроса на сервер после заполнения поля поиска
+// максимальная задержка перед запросом 3сек
+const updateSearch = useDebounceFn(searchRequest, 500, {maxWait: 3000});
+
 </script>
 
 <style scoped>
@@ -75,6 +74,4 @@ const updateSearch = async () => {
   height: 1.7rem;
   cursor: pointer;
 }
-
-
 </style>

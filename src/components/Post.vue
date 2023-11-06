@@ -12,7 +12,10 @@
 
     <div class="post-header text-decoration-none d-flex align-items-center gap-3 w-100">
       <div class="post-header-image">
-        <UserAvatarIcon/>
+        <div class="user-image">
+          <img v-if="props.post.user.image" :src="props.post.user.image" alt="Изображение профиля" class="img-cover">
+          <UserAvatarIcon v-else/>
+        </div>
       </div>
       <RouterLink :to="`/users/${props.post.user.id}`" class="post-header-info text-decoration-none d-flex flex-column">
         <div class="post-header-title">{{ props.post.user.surname }} {{ props.post.user.name }}</div>
@@ -89,10 +92,5 @@ const deletePost = () => {
 
 .post-footer-comments {
   color: var(--clr-text-alt);
-}
-
-.post-header-image {
-  width: 3rem;
-  height: 3rem;
 }
 </style>

@@ -137,6 +137,36 @@
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.password" :key="error">{{ error }}</p>
           </div>
         </div>
+        <div class="my-4 upload-image box-alt border-0">
+          <p class="mb-3 upload-image-title">Загрузить изображение профиля</p>
+          <div class="d-flex align-items-center justify-content-around">
+            <div class="current-image-block d-flex flex-column gap-2">
+              <div v-if="userStore.user.image" class="profile-image">
+                <img :src="userStore.user.image" alt="Текущее изображение профиля"
+                     class="current-image img-cover">
+              </div>
+              <div v-else class="profile-image">
+                <UserAvatarIcon class="img-cover"/>
+              </div>
+
+              <p class="text-center">Текущее</p>
+            </div>
+            <div class="new-image-block d-flex flex-column gap-2">
+              <div v-if="!image" class="profile-image border-0">
+                <AddRingIcon class="upload-image-btn" @click="fileDialog.open"/>
+              </div>
+              <div v-else-if="image" class="profile-image">
+                <button type="button" @click="resetNewImage" class="upload-image-reset-btn btn-close-white">&times;
+                </button>
+                <img :src="imagePreview" alt="Новое изображение профиля" class="new-image img-cover">
+              </div>
+              <p class="text-center">Новое</p>
+            </div>
+          </div>
+          <div class="server-errors text-center" v-if="$externalResults.image ?? []">
+            <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.image" :key="error">{{ error }}</p>
+          </div>
+        </div>
       </div>
       <div class="form-footer d-flex flex-column gap-2 align-items-end">
         <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -152,9 +182,17 @@ import {useToasterStore} from "@/stores/toaster";
 import {minLength, required} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import {minLen} from "@/validators/password";
+import useFormData from "@/use/useFormData";
+import {useFileDialog} from "@vueuse/core";
+import AddRingIcon from "@/components/icons/AddRingIcon.vue";
+import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 
 const userStore = useUserStore();
 const toastStore = useToasterStore();
+
+const fileDialog = useFileDialog({
+  accept: "image/*",
+});
 
 const name = ref(userStore.user.name);
 const surname = ref(userStore.user.surname);
@@ -166,6 +204,8 @@ const country = ref(userStore.user.country);
 const city = ref(userStore.user.city);
 const new_password = ref("");
 const password = ref("");
+const image = ref(null);
+const imagePreview = ref(null);
 const $externalResults = ref({});
 
 const rules = computed(() => ({
@@ -189,6 +229,7 @@ async function validate() {
   v$.value.$clearExternalResults();
   if (!await v$.value.$validate()) return;
   const res = await updateProfileData();
+  // TODO: update user in store??
   if (res === true) {
     v$.value.$reset();
     resetForm();
@@ -197,13 +238,24 @@ async function validate() {
   $externalResults.value = res.errors ?? [];
 }
 
+fileDialog.onChange((files) => {
+  image.value = files[0];
+  imagePreview.value = URL.createObjectURL(image.value);
+});
+
+const resetNewImage = () => {
+  image.value = null;
+  imagePreview.value = null;
+  fileDialog.reset();
+};
+
 /*
 * TODO: Необходимо реализовать валидацию всех форм (Логин,Регистрация,Создание поста,Изменение данных)
 * TODO: добавить валидацию изображения после создания инструмента загрузки изображений
 */
 
 const updateProfileData = async () => {
-  return await userStore.updateData({
+  const fd = useFormData({
     name: name.value,
     surname: surname.value,
     birthdate: birthdate.value,
@@ -214,7 +266,9 @@ const updateProfileData = async () => {
     city: city.value,
     new_password: new_password.value,
     password: password.value,
+    image:image.value,
   });
+  return await userStore.updateData(fd);
 };
 
 const resetForm = () => {
@@ -237,13 +291,60 @@ const resetForm = () => {
 }
 
 .auth-form p.invalid-text {
-  color: var(--bs-danger-text-emphasis);
+  color: var(--bs-danger);
 }
 
 .profile-image {
   width: 10rem;
   height: 10rem;
   border-radius: 50%;
-  border: 1px solid var(--clr-background-alt);
+  border: 1px solid var(--clr-text-alt);
+  overflow: hidden;
+}
+
+.upload-image-title {
+  color: var(--clr-text-alt);
+}
+
+.upload-image-btn {
+  transition: all .25s;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.upload-image-btn:hover {
+  transform: scale(1.05);
+}
+
+.new-image-block {
+  position: relative;
+}
+
+.new-image, .current-image {
+  transition: all .25s;
+}
+
+.new-image-block .upload-image-reset-btn {
+  position: absolute;
+  left: 100%;
+  background-color: var(--bs-danger);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  width: 1.5rem;
+  font-size: 1.5rem;
+  height: 1.5rem;
+  line-height: 1;
+  color: var(--clr-light);
+}
+
+.new-image-block .upload-image-reset-btn:hover {
+  border-color: var(--bs-danger);
+  background-color: transparent;
+  color: var(--bs-danger);
+}
+
+.new-image-block .upload-image-reset-btn:hover ~ img {
+  opacity: .3;
 }
 </style>

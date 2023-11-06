@@ -85,7 +85,6 @@ input:not([type=checkbox], [type=radio]) {
     padding: 9px;
     border-radius: 5px;
     color: var(--clr-text);
-;
 }
 
 input:focus {
@@ -105,6 +104,14 @@ input:required+label::after {
     content: " *";
     font-size: .7rem;
     color: var(--clr-primary);
+}
+
+.box-alt {
+    outline: 0;
+    background-color: var(--clr-background-alt);
+    padding: 9px;
+    border-radius: 5px;
+    color: var(--clr-text);
 }
 
 .img-cover {
@@ -130,6 +137,28 @@ input:required+label::after {
     padding: 1rem;
     background-color: var(--clr-background);
     border-radius: 10px;
+}
+
+.dropdown-menu {
+    background-color: var(--clr-background);
+    color: var(--clr-text);
+}
+
+.dropdown-item {
+    color: var(--clr-text);
+}
+
+.dropdown-item:hover {
+    background-color: var(--clr-background-alt);
+    color: var(--clr-text);
+}
+
+.user-icon,.user-image {
+    width: 3rem;
+    height: 3rem;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .dropdown-item{

@@ -2,7 +2,10 @@
   <form action="#" @submit.prevent="validate" enctype="multipart/form-data" class="create-post-form">
     <div class="create-post-header d-flex gap-3">
       <div class="create-post-profile-image">
-        <UserAvatarIcon/>
+        <div class="user-image">
+          <img v-if="userStore.user.image" :src="userStore.user.image" alt="Изображение профиля" class="img-cover">
+          <UserAvatarIcon v-else/>
+        </div>
       </div>
       <textarea class="create-post-input"
                 :class="{'is-invalid':v$.content.$error}"
@@ -109,7 +112,7 @@ const resetForm = () => {
   background-color: var(--clr-background-alt);
 }
 
-.create-post-profile-image {
+.user-image {
   width: 7rem;
   height: 7rem;
 }
