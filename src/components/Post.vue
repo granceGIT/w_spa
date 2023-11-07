@@ -35,6 +35,14 @@
     <div class="post-content">
       {{ props.post.content }}
     </div>
+
+    <div class="post-images d-flex gap-1 flex-wrap" v-if="props.post.images.length">
+      <div class="post-image"
+           v-for="(image,index) in props.post.images"
+           :key="image.id">
+        <img :src="image.image" :alt="image.alt ?? `post ${props.post.id} image ${index}`" class="img-cover">
+      </div>
+    </div>
     <div class="post-footer d-flex justify-content-between">
       <Reactions :reactions="props.post.reactions"
                  :id="props.post.id"
@@ -92,5 +100,15 @@ const deletePost = () => {
 
 .post-footer-comments {
   color: var(--clr-text-alt);
+}
+
+.post-image{
+  aspect-ratio: auto;
+  height: 4.5rem;
+}
+
+.post-image:nth-child(1){
+  width: 100%;
+  height: auto;
 }
 </style>

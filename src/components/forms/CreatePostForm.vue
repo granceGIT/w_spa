@@ -14,13 +14,20 @@
                 v-model="content"
                 placeholder="Расскажите как ваши дела?"></textarea>
     </div>
+    <div v-if="attachedImages.length" class="create-post-main d-flex flex-wrap gap-2">
+      <div v-for="{name,image} in attachedImagesPreview" :key="name" class="image-preview">
+        <button type="button" @click="resetNewImage(name)" class="upload-image-reset-btn">&times;
+        </button>
+        <img :src="image" :alt="`attached image ${name}`" class="img-cover">
+      </div>
+      <div class="server-errors" v-if="$externalResults ?? []">
+        <p class="invalid-text mb-1 p-0" v-for="error in $externalResults" :key="error">{{ String(error) }}</p>
+      </div>
+    </div>
     <div class="create-post-footer d-flex justify-content-between">
       <div class="create-post-attachments d-flex gap-3">
-        <div class="create-post-attachment">
+        <div class="create-post-attachment" @click="imageDialog.open">
           img Изображение
-        </div>
-        <div class="create-post-attachment">
-          file Файл
         </div>
       </div>
       <button class="create-post-button btn btn-primary">
@@ -34,28 +41,38 @@
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 import {useUserStore} from "@/stores/user";
 import {usePostStore} from "@/stores/post";
-import {computed, ref} from "vue";
-import {required} from "@vuelidate/validators";
+import {computed, ref, watch} from "vue";
+import {requiredUnless} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import {useToasterStore} from "@/stores/toaster";
+import {useFileDialog} from "@vueuse/core";
+import useFormData from "@/use/useFormData";
 
 const userStore = useUserStore();
 const postStore = usePostStore();
 const toastStore = useToasterStore();
+
+const imageDialog = useFileDialog({
+  accept: "image/jpeg, image/png, image/jpg, image/webp, image/bmp",
+});
+
+// TODO: Обработка ввода ссылок в поле content (?)
 const content = ref("");
+const attachedImages = ref([]);
+const attachedImagesPreview = ref(null);
 const $externalResults = ref({});
 
 const rules = computed(() => ({
   content: {
-    required,
+    requiredIfNoImages: requiredUnless(attachedImages.value.length),
   },
 }));
 
 const v$ = useVuelidate(rules, {content}, {$externalResults});
 
 async function validate() {
+  // Очистка ошибок сервера
   v$.value.$clearExternalResults();
-  if (!await v$.value.$validate()) return;
   const res = await createPostRequest();
   if (res === true) {
     v$.value.$reset();
@@ -65,20 +82,41 @@ async function validate() {
   $externalResults.value = res.errors ?? [];
 }
 
+imageDialog.onChange((files) => {
+  if (files.length > 10) {
+    toastStore.warning({title: "Ошибка", text: "Нельзя прикрепить больше 10 изображений"});
+    attachedImages.value = [...files].slice(0, 10);
+  } else attachedImages.value = [...files];
+});
+
+watch(attachedImages, () => {
+  attachedImagesPreview.value = attachedImages.value.map((file) => ({
+    name: file.name,
+    image: URL.createObjectURL(file),
+  }));
+});
+
+const resetNewImage = (name) => {
+  attachedImages.value = attachedImages.value.filter(item => item.name !== name);
+};
+
 const createPostRequest = async () => {
-  return await postStore.create({
-    userId: userStore.user.id,
-    content: content.value,
-  });
+  const fd = useFormData({content: content.value});
+  for (const image of attachedImages.value){
+    fd.append('images[]',image)
+  }
+  return postStore.create(fd);
 };
 
 const resetForm = () => {
   content.value = "";
+  attachedImages.value = [];
+  imageDialog.reset();
 };
 </script>
 
 <style scoped>
-.create-post-header {
+.create-post-header, .create-post-main {
   padding-bottom: 1rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--clr-background-alt);
@@ -90,13 +128,17 @@ const resetForm = () => {
   border: 0;
   padding: 9px;
   background-color: var(--clr-background-alt);
-  border-radius: 5px 5px 5px 0px;
+  border-radius: 5px 5px 5px 0;
   max-height: 20ch;
   min-height: 10ch;
 }
 
 .create-post-input.is-invalid {
   border: 1px solid var(--bs-danger);
+}
+
+.server-errors .invalid-text {
+  color: var(--bs-danger);
 }
 
 .create-post-attachment {
@@ -115,5 +157,35 @@ const resetForm = () => {
 .user-image {
   width: 7rem;
   height: 7rem;
+}
+
+.image-preview {
+  height: 5rem;
+  aspect-ratio: auto;
+  position: relative;
+}
+
+.upload-image-reset-btn {
+  position: absolute;
+  right: 0;
+  background-color: var(--bs-danger);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  width: 1.5rem;
+  font-size: 1.5rem;
+  height: 1.5rem;
+  line-height: 1;
+  color: var(--clr-light);
+  z-index: 1;
+}
+
+.upload-image-reset-btn:hover {
+  border-color: var(--bs-danger);
+  background-color: transparent;
+  color: var(--bs-danger);
+}
+
+.upload-image-reset-btn:hover ~ img {
+  opacity: .5;
 }
 </style>

@@ -67,7 +67,8 @@ export const useUserStore = defineStore("user", {
         },
         async updateData(payload) {
             try {
-                await UserService.updateData(payload);
+                const res = await UserService.updateData(payload);
+                this.user = res.data;
                 return true;
             } catch (e) {
                 ErrorHandler.handle(e);

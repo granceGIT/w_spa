@@ -10,12 +10,12 @@ export const usePostStore = defineStore("post", {
     actions: {
         async create(payload) {
             try {
-                const {userId, content, attachments, communityId} = payload;
-                await PostService.create(userId, content, attachments, communityId);
-                await this.updatePosts({userId});
+                const resp = await PostService.create(payload);
+                this.posts.unshift(resp.data);
                 return true;
             } catch (e) {
                 ErrorHandler.handle(e);
+                return e.response.data.error;
             }
         },
         async updatePost(id) {
@@ -26,23 +26,20 @@ export const usePostStore = defineStore("post", {
                 return true;
             } catch (e) {
                 ErrorHandler.handle(e);
+                return e.response.data.error;
             }
         },
         async updatePosts(payload) {
             try {
                 const {userId, communityId} = payload;
-                if (communityId) {
-                    const resp = await PostService.fetchCommunityPosts(communityId);
-                    this.posts = resp.data;
-                } else if (userId) {
-                    const resp = await PostService.fetchUserPosts(userId);
-                    this.posts = resp.data;
-                } else {
-                    const resp = await PostService.fetchAllPosts();
-                    this.posts = resp.data;
-                }
+                let resp;
+                if (communityId) resp = await PostService.fetchCommunityPosts(communityId);
+                else if (userId) resp = await PostService.fetchUserPosts(userId);
+                else resp = await PostService.fetchAllPosts();
+                this.posts = resp.data;
             } catch (e) {
                 ErrorHandler.handle(e);
+                return e.response.data.error;
             }
         },
         async deletePost(id) {
@@ -52,6 +49,7 @@ export const usePostStore = defineStore("post", {
                 return true;
             } catch (e) {
                 ErrorHandler.handle(e);
+                return e.response.data.error;
             }
         },
         async setReaction(payload) {
@@ -60,6 +58,7 @@ export const usePostStore = defineStore("post", {
                 return await ReactionService.setReaction(id, reactionId, type);
             } catch (e) {
                 ErrorHandler.handle(e);
+                return e.response.data.error;
             }
         },
 

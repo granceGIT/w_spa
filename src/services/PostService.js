@@ -1,11 +1,11 @@
 import api from "@/http";
 
 export default class PostService {
-    static async create(userId, content, attachments = [], communityId = false) {
-        const post = {user_id: userId, content};
-        if (attachments.length) post.attachments = attachments;
-        if (communityId) post.community_id = communityId;
-        return api.post("/posts", post);
+    static async create(payload) {
+        if (payload instanceof FormData){
+            return api.postForm("/posts", payload);
+        }
+        return api.post("/posts", payload);
     }
 
     static async fetchUserPosts(userId) {

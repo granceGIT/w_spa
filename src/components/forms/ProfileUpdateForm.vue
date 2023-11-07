@@ -156,7 +156,7 @@
                 <AddRingIcon class="upload-image-btn" @click="fileDialog.open"/>
               </div>
               <div v-else-if="image" class="profile-image">
-                <button type="button" @click="resetNewImage" class="upload-image-reset-btn btn-close-white">&times;
+                <button type="button" @click="resetNewImage" class="upload-image-reset-btn">&times;
                 </button>
                 <img :src="imagePreview" alt="Новое изображение профиля" class="new-image img-cover">
               </div>
@@ -192,6 +192,7 @@ const toastStore = useToasterStore();
 
 const fileDialog = useFileDialog({
   accept: "image/*",
+  multiple:false,
 });
 
 const name = ref(userStore.user.name);
@@ -272,6 +273,8 @@ const updateProfileData = async () => {
 };
 
 const resetForm = () => {
+  fileDialog.reset();
+  imagePreview.value = null;
   new_password.value = "";
   password.value = "";
 };
