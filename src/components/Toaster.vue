@@ -10,7 +10,7 @@
           >
         <span class="toaster-item-header d-flex w-100 align-items-center justify-content-between mb-2 gap-3">
           <span class="toaster-item-title">{{ toast.title ?? toastDefaultTitleMap[toast.type] }}</span>
-          <button @click="toastStore.dismiss(toast.id)" class="btn btn-close">
+          <button @click="toastStore.dismiss(toast.id)" class="btn btn-close btn-close-dark">
             <span class="hidden-visually">Закрыть</span>
           </button>
         </span>

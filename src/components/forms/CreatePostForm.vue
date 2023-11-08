@@ -15,10 +15,13 @@
                 placeholder="Расскажите как ваши дела?"></textarea>
     </div>
     <div v-if="attachedImages.length" class="create-post-main d-flex flex-wrap gap-2">
-      <div v-for="{name,image} in attachedImagesPreview" :key="name" class="image-preview">
+      <div v-for="({name,image},index) in attachedImagesPreview" :key="name" class="image-preview">
         <button type="button" @click="resetNewImage(name)" class="upload-image-reset-btn">&times;
         </button>
-        <img :src="image" :alt="`attached image ${name}`" class="img-cover">
+        <img :src="image"
+             :alt="`attached image ${name}`"
+             @click="imageStore.show(attachedImagesPreview,index)"
+             class="img-cover">
       </div>
       <div class="server-errors" v-if="$externalResults ?? []">
         <p class="invalid-text mb-1 p-0" v-for="error in $externalResults" :key="error">{{ String(error) }}</p>
@@ -47,27 +50,27 @@ import useVuelidate from "@vuelidate/core";
 import {useToasterStore} from "@/stores/toaster";
 import {useFileDialog} from "@vueuse/core";
 import useFormData from "@/use/useFormData";
+import {useImageStore} from "@/stores/image";
+import {acceptImageTypes} from "@/validators/images";
 
 const userStore = useUserStore();
 const postStore = usePostStore();
 const toastStore = useToasterStore();
-
-const imageDialog = useFileDialog({
-  accept: "image/jpeg, image/png, image/jpg, image/webp, image/bmp",
-});
+const imageStore = useImageStore();
 
 // TODO: Обработка ввода ссылок в поле content (?)
+// TODO: Обработка многострочного ввода в поле content (?)
 const content = ref("");
 const attachedImages = ref([]);
 const attachedImagesPreview = ref(null);
-const $externalResults = ref({});
 
+// Валидация
+const $externalResults = ref({});
 const rules = computed(() => ({
   content: {
     requiredIfNoImages: requiredUnless(attachedImages.value.length),
   },
 }));
-
 const v$ = useVuelidate(rules, {content}, {$externalResults});
 
 async function validate() {
@@ -82,6 +85,11 @@ async function validate() {
   $externalResults.value = res.errors ?? [];
 }
 
+// Работа с изображениями
+const imageDialog = useFileDialog({
+  accept: acceptImageTypes.join(","),
+});
+
 imageDialog.onChange((files) => {
   if (files.length > 10) {
     toastStore.warning({title: "Ошибка", text: "Нельзя прикрепить больше 10 изображений"});
@@ -90,28 +98,31 @@ imageDialog.onChange((files) => {
 });
 
 watch(attachedImages, () => {
+  // При изменении прикрепленных фото обновляем их предпросмотр
   attachedImagesPreview.value = attachedImages.value.map((file) => ({
     name: file.name,
     image: URL.createObjectURL(file),
   }));
 });
 
+// Сброс значений
 const resetNewImage = (name) => {
   attachedImages.value = attachedImages.value.filter(item => item.name !== name);
-};
-
-const createPostRequest = async () => {
-  const fd = useFormData({content: content.value});
-  for (const image of attachedImages.value){
-    fd.append('images[]',image)
-  }
-  return postStore.create(fd);
 };
 
 const resetForm = () => {
   content.value = "";
   attachedImages.value = [];
   imageDialog.reset();
+};
+
+// Запрос на создание поста
+const createPostRequest = async () => {
+  const fd = useFormData({content: content.value});
+  for (const image of attachedImages.value) {
+    fd.append("images[]", image);
+  }
+  return postStore.create(fd);
 };
 </script>
 

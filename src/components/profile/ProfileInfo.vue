@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="profile-info">
     <ProfileInfoItem v-for="{title,subtitle,icon} in userInfo"
                      :key="title"
                      :subtitle="subtitle"
@@ -55,5 +55,7 @@ const userInfo = [
 </script>
 
 <style scoped>
-
+.profile-info{
+  padding: 9px;
+}
 </style>

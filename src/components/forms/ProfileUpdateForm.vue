@@ -152,13 +152,13 @@
               <p class="text-center">Текущее</p>
             </div>
             <div class="new-image-block d-flex flex-column gap-2">
-              <div v-if="!image" class="profile-image border-0">
-                <AddRingIcon class="upload-image-btn" @click="fileDialog.open"/>
-              </div>
-              <div v-else-if="image" class="profile-image">
+              <div v-if="image" class="profile-image">
                 <button type="button" @click="resetNewImage" class="upload-image-reset-btn">&times;
                 </button>
                 <img :src="imagePreview" alt="Новое изображение профиля" class="new-image img-cover">
+              </div>
+              <div v-else class="profile-image border-0">
+                <AddRingIcon class="upload-image-btn" @click="imageDialog.open"/>
               </div>
               <p class="text-center">Новое</p>
             </div>
@@ -186,14 +186,10 @@ import useFormData from "@/use/useFormData";
 import {useFileDialog} from "@vueuse/core";
 import AddRingIcon from "@/components/icons/AddRingIcon.vue";
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
+import {acceptImageTypes} from "@/validators/images";
 
 const userStore = useUserStore();
 const toastStore = useToasterStore();
-
-const fileDialog = useFileDialog({
-  accept: "image/*",
-  multiple:false,
-});
 
 const name = ref(userStore.user.name);
 const surname = ref(userStore.user.surname);
@@ -207,8 +203,9 @@ const new_password = ref("");
 const password = ref("");
 const image = ref(null);
 const imagePreview = ref(null);
-const $externalResults = ref({});
 
+// Валидация
+const $externalResults = ref({});
 const rules = computed(() => ({
   name: {
     required,
@@ -223,14 +220,13 @@ const rules = computed(() => ({
     required,
   },
 }));
-
 const v$ = useVuelidate(rules, {name, surname, password, new_password}, {$externalResults});
 
 async function validate() {
+  // Очистка ошибок сервера
   v$.value.$clearExternalResults();
   if (!await v$.value.$validate()) return;
   const res = await updateProfileData();
-  // TODO: update user in store??
   if (res === true) {
     v$.value.$reset();
     resetForm();
@@ -239,22 +235,33 @@ async function validate() {
   $externalResults.value = res.errors ?? [];
 }
 
-fileDialog.onChange((files) => {
+// Работа с изображением
+const imageDialog = useFileDialog({
+  accept: acceptImageTypes.join(","),
+  multiple: false,
+});
+
+// TODO: Вывод imagePreview для ImageViewer (?)
+imageDialog.onChange((files) => {
   image.value = files[0];
   imagePreview.value = URL.createObjectURL(image.value);
 });
 
+// Сброс
+const resetForm = () => {
+  imageDialog.reset();
+  imagePreview.value = null;
+  new_password.value = "";
+  password.value = "";
+};
+
 const resetNewImage = () => {
   image.value = null;
   imagePreview.value = null;
-  fileDialog.reset();
+  imageDialog.reset();
 };
 
-/*
-* TODO: Необходимо реализовать валидацию всех форм (Логин,Регистрация,Создание поста,Изменение данных)
-* TODO: добавить валидацию изображения после создания инструмента загрузки изображений
-*/
-
+// Запрос на изменение данных
 const updateProfileData = async () => {
   const fd = useFormData({
     name: name.value,
@@ -267,16 +274,9 @@ const updateProfileData = async () => {
     city: city.value,
     new_password: new_password.value,
     password: password.value,
-    image:image.value,
+    image: image.value,
   });
   return await userStore.updateData(fd);
-};
-
-const resetForm = () => {
-  fileDialog.reset();
-  imagePreview.value = null;
-  new_password.value = "";
-  password.value = "";
 };
 </script>
 

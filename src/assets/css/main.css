@@ -53,10 +53,22 @@
     border:none !important;
 }
 
+body[color-scheme=dark] .btn-close:not(.btn-close-dark){
+    filter: invert(1);
+}
+
 .btn-close:active{
     border:none !important;
     box-shadow: none !important;
     transform: none !important;
+}
+
+.btn-close:focus {
+    box-shadow: 0 0 3px 0 var(--clr-primary);
+}
+
+.btn-close:focus:hover {
+    box-shadow: 0 0 3px 0 var(--clr-primary);
 }
 
 .link {

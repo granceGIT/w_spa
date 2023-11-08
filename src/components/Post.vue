@@ -40,7 +40,11 @@
       <div class="post-image"
            v-for="(image,index) in props.post.images"
            :key="image.id">
-        <img :src="image.image" :alt="image.alt ?? `post ${props.post.id} image ${index}`" class="img-cover">
+        <img
+            :src="image.image"
+            :alt="image.alt ?? `post ${props.post.id} image ${index}`"
+            @click="imageStore.show(props.post.images,index)"
+            class="img-cover">
       </div>
     </div>
     <div class="post-footer d-flex justify-content-between">
@@ -58,8 +62,10 @@ import {formatDistance} from "date-fns";
 import ru from "date-fns/locale/ru";
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 import {useUserStore} from "@/stores/user";
+import {useImageStore} from "@/stores/image";
 
 const userStore = useUserStore();
+const imageStore = useImageStore();
 
 const emit = defineEmits(["update", "delete"]);
 const props = defineProps({
@@ -102,12 +108,12 @@ const deletePost = () => {
   color: var(--clr-text-alt);
 }
 
-.post-image{
+.post-image {
   aspect-ratio: auto;
   height: 4.5rem;
 }
 
-.post-image:nth-child(1){
+.post-image:nth-child(1) {
   width: 100%;
   height: auto;
 }

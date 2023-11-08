@@ -1,5 +1,5 @@
 <template>
-  <section class="page-section profile-section">
+  <section class="page-section profile-section p-0">
     <div class="profile-header d-flex align-items-center gap-3">
       <Suspense>
         <template #fallback>
@@ -18,13 +18,19 @@
          class="profile-actions d-flex align-items-center justify-content-around gap-1">
       <button class="btn btn-primary" @click="sendFriendRequest">Добавить в друзья</button>
     </div>
-    <div class="profile-info">
-      <div class="profile-info-header mb-4">
-        <div class="profile-info-header-text">Информация</div>
-      </div>
-      <div class="profile-info-tab-content">
-        <ProfileInfo :user="user"/>
-      </div>
+    <div>
+      <Tabs :tabs="tabs">
+        <template #content="{activeTab}">
+          <Suspense>
+            <template #default>
+              <component :is="activeTab.component" v-bind="activeTab.props"/>
+            </template>
+            <template #fallback>
+              <LoadingSpinner/>
+            </template>
+          </Suspense>
+        </template>
+      </Tabs>
     </div>
   </section>
 </template>
@@ -37,6 +43,9 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import {ref, watch} from "vue";
 import ProfileInfo from "@/components/profile/ProfileInfo.vue";
 import {useToasterStore} from "@/stores/toaster";
+import Tabs from "@/components/Tabs.vue";
+import JobIcon from "@/components/icons/JobIcon.vue";
+import DateIcon from "@/components/icons/DateIcon.vue";
 
 const userStore = useUserStore();
 const toastStore = useToasterStore();
@@ -53,17 +62,32 @@ watch(
 );
 
 const fetchUser = async () => {
-  user.value = await userStore.fetchProfile({
-    userId: Number(route.params.id),
-  });
+  user.value = await userStore.fetchProfile({userId: id.value});
 };
 
 const sendFriendRequest = async () => {
   const res = await userStore.sendFriendRequest({userId: id.value});
   if (res) toastStore.success({text: "Запрос отправлен!"});
 };
-
+// TODO: нужен ли вызов функции здесь?
 await fetchUser();
+
+
+const tabs = [
+  {
+    title: "Информация",
+    component: ProfileInfo,
+    props: {user: user.value},
+  },
+  {
+    title: "Друзья",
+    component: JobIcon,
+  },
+  {
+    title: "Сообщества",
+    component: DateIcon,
+  },
+];
 
 </script>
 
@@ -76,15 +100,8 @@ await fetchUser();
   color: var(--clr-text);
 }
 
-.profile-info-header {
+.profile-header,.profile-actions{
   padding: 9px;
-  font-size: var(--fz-larger);
-  border-bottom: 1px solid var(--clr-text-alt);
-}
-
-.profile-info-tabs .tab.active {
-  background-color: var(--clr-background);
-  color: var(--clr-primary);
 }
 
 .profile-actions .btn {
