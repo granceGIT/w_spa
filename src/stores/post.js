@@ -18,25 +18,30 @@ export const usePostStore = defineStore("post", {
                 return e.response.data.error;
             }
         },
-        async updatePost(id) {
+        async _getPosts(payload) {
             try {
-                const resp = await PostService.fetchPost(id);
-                // изменить информацию о посте в store
-                this.posts = this.posts.map(post => post.id === resp.data.id ? resp.data : post);
-                return true;
+                const resp = await PostService.fetchPosts(payload);
+                return resp.data.data;
             } catch (e) {
                 ErrorHandler.handle(e);
                 return e.response.data.error;
             }
         },
         async updatePosts(payload) {
+            this.posts = await this._getPosts(payload);
+        },
+        async loadMore(payload) {
+            const res = await this._getPosts(payload);
+            if (res.length < 1) return false;
+            this.posts.push(...res);
+            return true;
+        },
+        async updatePost(id) {
             try {
-                const {userId, communityId} = payload;
-                let resp;
-                if (communityId) resp = await PostService.fetchCommunityPosts(communityId);
-                else if (userId) resp = await PostService.fetchUserPosts(userId);
-                else resp = await PostService.fetchAllPosts();
-                this.posts = resp.data;
+                const resp = await PostService.fetchPosts({type: "one", id});
+                // изменить информацию о посте в store
+                this.posts = this.posts.map(post => post.id === resp.data.id ? resp.data : post);
+                return true;
             } catch (e) {
                 ErrorHandler.handle(e);
                 return e.response.data.error;

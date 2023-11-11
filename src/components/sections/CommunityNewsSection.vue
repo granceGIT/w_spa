@@ -27,15 +27,15 @@ const toastStore = useToasterStore();
 const postStore = usePostStore();
 const route = useRoute();
 const page = ref(1);
-const userId = ref(Number(route.params.id));
+const communityId = ref(Number(route.params.id));
 const postLoader = ref(true);
 
 const fetchPosts = async () => {
-  await postStore.updatePosts({type:"user",id:userId.value,page:page.value});
+  await postStore.updatePosts({type:"community",id:communityId.value,page:page.value});
 };
 
 const loadMorePosts = async () => {
-  const res = await postStore.loadMore({type:"user",id:userId.value,page:++page.value});
+  const res = await postStore.loadMore({type:"community",id:communityId.value,page:++page.value});
   if (!res) postLoader.value = false;
 };
 
@@ -49,7 +49,7 @@ const deletePost = async (id) => {
 watch(
     () => route.params.id,
     async () => {
-      userId.value = Number(route.params.id);
+      communityId.value = Number(route.params.id);
       await fetchPosts();
     },
 );

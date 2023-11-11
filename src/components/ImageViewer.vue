@@ -1,5 +1,5 @@
 <template>
-  <Modal :visible="imageStore.visible" @close="imageStore.close" class="image-viewer">
+  <Modal :visible="imageStore.visible" @close="imageStore.close" variant="image-viewer">
     <div class="control-prev" @click="imageStore.prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Пред</span>

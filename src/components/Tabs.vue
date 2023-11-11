@@ -5,7 +5,8 @@
           :key="index"
           :class="{active:activeTabIndex===index}"
           @click="activeTabIndex=index"
-          class="tabs-header-item" >
+          :style="`width:calc(100%/${props.tabs.length})`"
+          class="tabs-header-item">
         {{tab.title}}
       </li>
     </ul>
@@ -40,7 +41,6 @@ const activeTabIndex = ref(props.activeIndex ?? 0);
   color: var(--clr-primary);
   align-items: center;
   justify-content: center;
-  width: calc(100%/3);
   padding: 9px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;

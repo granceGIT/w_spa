@@ -1,20 +1,18 @@
 <template>
-  <div v-if="props.visible">
-    <Teleport to="body">
-      <Transition name="modal">
-        <div v-if="props.visible" v-bind="$attrs">
-          <div class="modal-wrapper" @click="closeModal">
-            <div class="modal-content" @click.stop>
-              <button class="btn btn-close" type="button" @click="closeModal">
-                <span class="hidden-visually">Закрыть</span>
-              </button>
-              <slot/>
-            </div>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="props.visible" :class="props.variant">
+        <div class="modal-wrapper" @click="closeModal">
+          <div class="modal-content" @click.stop>
+            <button class="btn btn-close" type="button" @click="closeModal">
+              <span class="hidden-visually">Закрыть</span>
+            </button>
+            <slot/>
           </div>
         </div>
-      </Transition>
-    </Teleport>
-  </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -23,6 +21,7 @@ import {defineProps, defineEmits, watch} from "vue";
 const emit = defineEmits(["close"]);
 const props = defineProps({
   visible: Boolean,
+  variant: String,
 });
 
 watch(() => props.visible, () => {
@@ -33,7 +32,11 @@ const closeModal = () => emit("close");
 </script>
 
 <style scoped>
-.image-viewer .modal-content{
+.modal{
+  display:unset
+}
+
+.image-viewer .modal-content {
   max-width: 85vw;
   width: 100%;
   max-height: 90vh;
@@ -72,7 +75,7 @@ const closeModal = () => emit("close");
   right: .5rem;
   width: 1.1rem;
   height: 1.1rem;
-  background-size:cover;
+  background-size: cover;
   opacity: .7;
   transition: all .25s;
   z-index: 2;
@@ -84,16 +87,16 @@ const closeModal = () => emit("close");
 
 /* modal animations */
 .modal-enter-active,
-.modal-leave-active{
-  transition:all .25s;
+.modal-leave-active {
+  transition: all .25s;
 }
 
 .modal-enter-from,
-.modal-leave-to{
+.modal-leave-to {
   opacity: 0;
 }
 
-.modal-enter-to{
+.modal-enter-to {
   opacity: 1;
 }
 </style>

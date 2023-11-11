@@ -5,7 +5,7 @@
         <div class="col-12 col-md-6 offset-md-1 d-flex flex-column">
           <Suspense>
             <template #default>
-              <NewsSection/>
+              <CommunityNewsSection/>
             </template>
             <template #fallback>
               <LoadingSpinner/>
@@ -21,10 +21,9 @@
 </template>
 
 <script setup>
-
-import NewsSection from "@/components/sections/NewsSection.vue";
 import CommunityProfileSection from "@/components/sections/CommunityProfileSection.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import CommunityNewsSection from "@/components/sections/CommunityNewsSection.vue";
 </script>
 
 <style scoped>
