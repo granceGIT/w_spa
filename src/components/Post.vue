@@ -103,7 +103,7 @@ const deletePost = () => {
 };
 
 const postContent = () => {
-  return props.post.content.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "<br>");
+  return props.post.content && props.post.content.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "$1 <br> $2");
 };
 </script>
 

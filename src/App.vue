@@ -8,14 +8,18 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 <template>
   <Header/>
-  <Suspense>
-    <template #default>
-      <RouterView/>
-    </template>
-    <template #fallback>
-      <LoadingSpinner/>
-    </template>
-  </Suspense>
+  <RouterView v-slot="{ Component }">
+    <Suspense timeout="0">
+      <template #default>
+        <div>
+          <component :is="Component" :key="$route.path"></component>
+        </div>
+      </template>
+      <template #fallback>
+        <LoadingSpinner/>
+      </template>
+    </Suspense>
+  </RouterView>
   <Toaster/>
   <ImageViewer/>
   <Footer/>
