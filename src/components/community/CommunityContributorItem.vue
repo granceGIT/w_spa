@@ -1,5 +1,6 @@
 <template>
-  <RouterLink :to="`/users/${props.user.id}`" class="text-decoration-none community-contributors-item d-flex gap-2 align-items-center">
+  <RouterLink :to="`/users/${props.user.id}`"
+              class="text-decoration-none community-contributors-item d-flex gap-2 align-items-center">
     <div class="community-contributor-image">
       <div class="user-image">
         <img v-if="props.user.image" :src="props.user.image" alt="Изображение профиля" class="img-cover">
@@ -17,11 +18,11 @@
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon.vue";
 
 const props = defineProps({
-  user:{
-    type:Object,
-    required:true,
-  }
-})
+  user: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 
 <style scoped>
@@ -36,7 +37,7 @@ const props = defineProps({
   color: var(--clr-text);
 }
 
-.user-image{
+.user-image {
   width: 3rem;
   height: 3rem;
 }

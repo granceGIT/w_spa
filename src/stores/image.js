@@ -6,10 +6,10 @@ export const useImageStore = defineStore("image", {
         visible: false,
         activeIndex: 0,
     }),
-    getters:{
-        image(){
-            return this.images[this.activeIndex]
-        }
+    getters: {
+        image() {
+            return this.images[this.activeIndex];
+        },
     },
     actions: {
         show(images, active = 0) {
@@ -21,11 +21,11 @@ export const useImageStore = defineStore("image", {
             this.visible = false;
             this.images = [];
         },
-        next(){
-            this.activeIndex = this.activeIndex === this.images.length - 1 ? 0 : this.activeIndex+1
+        next() {
+            this.activeIndex = this.activeIndex === this.images.length - 1 ? 0 : this.activeIndex + 1;
         },
-        prev(){
-            this.activeIndex = this.activeIndex === 0 ? this.images.length - 1 : this.activeIndex-1
-        }
+        prev() {
+            this.activeIndex = this.activeIndex === 0 ? this.images.length - 1 : this.activeIndex - 1;
+        },
     },
 });

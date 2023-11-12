@@ -3,14 +3,19 @@
     <div v-if="props.post.community?.id" class="post-header text-decoration-none d-flex align-items-center gap-3 w-100">
       <div class="post-header-image">
         <div class="community-image">
-          <img v-if="props.post.community.image" :src="props.post.community.image" alt="Изображение сообщества" class="img-cover">
+          <img v-if="props.post.community.image" :src="props.post.community.image" alt="Изображение сообщества"
+               class="img-cover">
           <UserAvatarIcon v-else/>
         </div>
       </div>
-      <div  class="post-header-info d-flex flex-column">
-        <RouterLink :to="`/communities/${props.post.community.id}`" class="post-header-title">{{ props.post.community.name }}</RouterLink>
+      <div class="post-header-info d-flex flex-column">
+        <RouterLink :to="`/communities/${props.post.community.id}`" class="post-header-title">
+          {{ props.post.community.name }}
+        </RouterLink>
         <div class="post-header-subtitle">{{ dateDiff }}</div>
-        <RouterLink :to="`/users/${props.post.user.id}`" class="post-header-subtitle">от {{ props.post.user.surname }} {{ props.post.user.name }}</RouterLink>
+        <RouterLink :to="`/users/${props.post.user.id}`" class="post-header-subtitle">от {{ props.post.user.surname }}
+          {{ props.post.user.name }}
+        </RouterLink>
       </div>
 
       <div class="post-header-actions ms-auto" v-if="props.post.user?.id===userStore.user.id">
@@ -97,9 +102,9 @@ const deletePost = () => {
   emit("delete", props.post.id);
 };
 
-const postContent = ()=>{
-  return props.post.content.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g,'<br>')
-}
+const postContent = () => {
+  return props.post.content.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "<br>");
+};
 </script>
 
 <style scoped>
@@ -108,7 +113,7 @@ const postContent = ()=>{
 }
 
 .post-header-title {
-  text-decoration:none;
+  text-decoration: none;
   font-size: var(--fz-larger);
   color: var(--clr-text);
 }
@@ -134,14 +139,15 @@ const postContent = ()=>{
 .post-image:nth-child(1) {
   width: 100%;
   height: auto;
+  max-height: 70vh;
 }
 
-.community-image{
+.community-image {
   width: 4rem;
   height: 4rem;
 }
 
-.user-image{
+.user-image {
   width: 3rem;
   height: 3rem;
 }

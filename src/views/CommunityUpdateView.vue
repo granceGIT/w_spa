@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row w-100 ">
         <div class="col-12 col-lg-6 offset-lg-3 h-100">
-         <CommunityUpdateForm :community="community"/>
+          <CommunityUpdateForm :community="community"/>
         </div>
       </div>
     </div>
@@ -20,19 +20,18 @@ import ErrorHandler from "@/handlers/ErrorHandler";
 const route = useRoute();
 
 const community = ref({});
-const id = ref(Number(route.params.id))
+const id = ref(Number(route.params.id));
 
-const fetchCommunity = async ()=>{
-  try{
+const fetchCommunity = async () => {
+  try {
     const res = await CommunityService.fetchCommunity(id.value);
-    return res.data
+    return res.data;
+  } catch (e) {
+    ErrorHandler.handle(e);
   }
-  catch(e){
-    ErrorHandler.handle(e)
-  }
-}
+};
 
-community.value = await fetchCommunity()
+community.value = await fetchCommunity();
 </script>
 
 <style scoped>

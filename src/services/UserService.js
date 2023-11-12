@@ -6,7 +6,7 @@ export default class UserService {
     }
 
     static async updateData(data) {
-        if (data instanceof FormData){
+        if (data instanceof FormData) {
             data.append("_method", "PUT");
             return api.postForm(`/profile`, data);
         }

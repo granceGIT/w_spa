@@ -9,11 +9,11 @@ import {useUserStore} from "@/stores/user";
 import CreatePostForm from "@/components/forms/CreatePostForm.vue";
 
 const props = defineProps({
-  community:{
-    type:Object,
-    default:()=>({}),
-  }
-})
+  community: {
+    type: Object,
+    default: () => ({}),
+  },
+});
 const userStore = useUserStore();
 </script>
 

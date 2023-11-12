@@ -34,13 +34,13 @@ const communityInfo = [
   },
   {
     title: "Дата создания",
-    subtitle: format(new Date(props.community.created_at),"dd.MM.yyyy"),
+    subtitle: format(new Date(props.community.created_at), "dd.MM.yyyy"),
   },
 ];
 </script>
 
 <style scoped>
-.community-info{
+.community-info {
   border-top: 1px solid var(--clr-text-alt);
   font-size: var(--fz-larger);
 }

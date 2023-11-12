@@ -52,9 +52,9 @@
             </RouterLink>
           </p>
           <p class="text-end">
-<!--            <RouterLink to="/" class="link link-primary">Забыли-->
-<!--              пароль?-->
-<!--            </RouterLink>-->
+            <!--            <RouterLink to="/" class="link link-primary">Забыли-->
+            <!--              пароль?-->
+            <!--            </RouterLink>-->
           </p>
 
         </div>
@@ -95,7 +95,7 @@ async function validate() {
   if (res === true) {
     v$.value.$reset();
     resetForm();
-    await router.push('/');
+    await router.push("/");
   }
   $externalResults.value = res.errors ?? [];
 }

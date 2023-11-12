@@ -7,7 +7,7 @@
           @click="activeTabIndex=index"
           :style="`width:calc(100%/${props.tabs.length})`"
           class="tabs-header-item">
-        {{tab.title}}
+        {{ tab.title }}
       </li>
     </ul>
     <div class="tabs-content mt-3 p-2">
@@ -18,22 +18,23 @@
 
 <script setup>
 import {ref} from "vue";
+
 const props = defineProps({
-  tabs:{
+  tabs: {
     type: Array,
-    required:true,
+    required: true,
   },
-  activeIndex:{
-    type:Number,
+  activeIndex: {
+    type: Number,
     default: 0,
-  }
-})
+  },
+});
 
 const activeTabIndex = ref(props.activeIndex ?? 0);
 </script>
 
 <style scoped>
-.tabs-header-item{
+.tabs-header-item {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--clr-primary);
@@ -48,11 +49,11 @@ const activeTabIndex = ref(props.activeIndex ?? 0);
   transition: all .25s;
 }
 
-.tabs-header-item:hover{
+.tabs-header-item:hover {
   background-color: var(--clr-background-alt);
 }
 
-.tabs-header-item.active{
+.tabs-header-item.active {
   background-color: var(--clr-primary);
   color: var(--clr-light);
 }

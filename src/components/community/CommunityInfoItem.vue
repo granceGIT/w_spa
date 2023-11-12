@@ -12,14 +12,14 @@ const props = defineProps({
   },
   icon: {},
   subtitle: {
-    type: [String,Number, null],
+    type: [String, Number, null],
     required: true,
   },
 });
 </script>
 
 <style scoped>
-.community-info-item{
+.community-info-item {
   padding: 9px;
   border-top: 1px solid var(--clr-background-alt);
 }

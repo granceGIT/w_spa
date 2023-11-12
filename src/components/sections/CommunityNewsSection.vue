@@ -6,7 +6,7 @@
           @delete="deletePost"
     />
     <IntersectionObserver v-if="postStore.postLoader" :listen="postStore.postLoader" @intersect="postStore.loadMore"/>
-    <ContentNotFound class="h-auto my-4" title="Дальше ничего нет" text="Вы просмотрели все новости" v-else />
+    <ContentNotFound class="h-auto my-4" title="Дальше ничего нет" text="Вы просмотрели все новости" v-else/>
   </section>
 
   <section class="page-section news-section" v-else>
@@ -29,7 +29,7 @@ const route = useRoute();
 const communityId = ref(Number(route.params.id));
 
 const fetchPosts = async () => {
-  await postStore.updatePosts({type:"community",id:communityId.value,page:1});
+  await postStore.updatePosts({type: "community", id: communityId.value, page: 1});
 };
 
 const deletePost = async (id) => {

@@ -67,7 +67,8 @@
           <div class="client-errors">
             <p class="invalid-text mb-1 p-0" v-if="v$.password.$error && v$.password.required.$invalid">Поле пароль
               обязательно для заполнения</p>
-            <p class="invalid-text mb-1 p-0" v-else-if="v$.password.$error && v$.password.minLength.$invalid">Минимальная длина пароля 5 символов</p>
+            <p class="invalid-text mb-1 p-0" v-else-if="v$.password.$error && v$.password.minLength.$invalid">
+              Минимальная длина пароля 5 символов</p>
           </div>
           <div class="server-errors" v-if="$externalResults.password ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.password" :key="error">{{ error }}</p>
@@ -152,7 +153,7 @@ const rules = computed(() => ({
   },
   password: {
     required,
-    minLength: minLength(minLen)
+    minLength: minLength(minLen),
   },
   passwordConfirmation: {
     required,
@@ -173,7 +174,7 @@ async function validate() {
   if (res === true) {
     v$.value.$reset();
     resetForm();
-    toastStore.success({text:"Вы успешно зарегистрировались"})
+    toastStore.success({text: "Вы успешно зарегистрировались"});
     await router.push("/login");
   }
   $externalResults.value = res.errors ?? [];

@@ -242,8 +242,7 @@ imageDialog.onChange((files) => {
 
 // Сброс
 const resetForm = () => {
-  imageDialog.reset();
-  imagePreview.value = null;
+  resetNewImage();
   new_password.value = "";
   password.value = "";
 };

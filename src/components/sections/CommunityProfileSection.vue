@@ -11,14 +11,16 @@
       </div>
     </div>
     <div class="community-actions d-flex align-items-center justify-content-around gap-1">
-      <RouterLink :to="`/communities/${community.id}/update`" class="btn btn-primary" v-if="community.user_id===userStore.user.id">Редактировать</RouterLink>
+      <RouterLink :to="`/communities/${community.id}/update`" class="btn btn-primary"
+                  v-if="community.user_id===userStore.user.id">Редактировать
+      </RouterLink>
       <button class="btn btn-primary" v-if="!community.subscribed" @click="subscribeRequest">Подписаться</button>
       <button class="btn btn-alt" v-else @click="unsubscribeRequest">Отписаться</button>
     </div>
     <CommunityInfo :community="community" :key="community"/>
     <CommunityContributors :contributors="community.contributors" :key="community.contributors"/>
   </section>
-  <ContentNotFound title="По вашему запросу ничего не найдено" text="Тут ничего нет..." v-else />
+  <ContentNotFound title="По вашему запросу ничего не найдено" text="Тут ничего нет..." v-else/>
 </template>
 
 <script setup>
@@ -31,30 +33,25 @@ import ContentNotFound from "@/components/ContentNotFound.vue";
 import {useRouter} from "vue-router";
 
 const props = defineProps({
-  community:{
-    type:Object,
-    required:true
-  }
-})
-const router = useRouter()
+  community: {
+    type: Object,
+    required: true,
+  },
+});
+const router = useRouter();
 const userStore = useUserStore();
-const community = ref(props.community)
+const community = ref(props.community);
 
 
+const subscribeRequest = async () => {
+  if (!userStore.isAuthenticated) return await router.push("/login");
+  community.value = await userStore.subscribeToCommunity(community.value.id);
+};
 
-const subscribeRequest = async ()=>{
-  if (!userStore.isAuthenticated) return await router.push('/login')
-  community.value = await userStore.subscribeToCommunity(community.value.id)
-}
-
-const unsubscribeRequest = async ()=>{
-  community.value = await userStore.unsubscribeFromCommunity(community.value.id)
-}
-
-
-
+const unsubscribeRequest = async () => {
+  community.value = await userStore.unsubscribeFromCommunity(community.value.id);
+};
 </script>
-
 
 <style scoped>
 .community-header .community-header-title {
@@ -69,7 +66,7 @@ const unsubscribeRequest = async ()=>{
   width: 100%;
 }
 
-.community-image{
+.community-image {
   width: 8rem;
   height: 8rem;
 }

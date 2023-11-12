@@ -19,7 +19,7 @@
               <CommunityProfileSection :community="community"/>
             </template>
             <template #fallback>
-              <LoadingSpinner />
+              <LoadingSpinner/>
             </template>
           </Suspense>
         </div>
@@ -39,10 +39,10 @@ import {useRoute} from "vue-router";
 import CreatePostSection from "@/components/sections/CreatePostSection.vue";
 import {useUserStore} from "@/stores/user";
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 const route = useRoute();
-const community = ref({})
-const id = ref(Number(route.params.id))
+const community = ref({});
+const id = ref(Number(route.params.id));
 
 watch(
     () => route.params.id,
@@ -53,12 +53,11 @@ watch(
 );
 
 const fetchCommunity = async () => {
-  try{
-    const resp = await CommunityService.fetchCommunity(id.value)
-    community.value = resp.data
-  }
-  catch(e){
-    ErrorHandler.handle(e)
+  try {
+    const resp = await CommunityService.fetchCommunity(id.value);
+    community.value = resp.data;
+  } catch (e) {
+    ErrorHandler.handle(e);
   }
 };
 

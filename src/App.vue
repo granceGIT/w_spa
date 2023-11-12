@@ -13,11 +13,11 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
       <RouterView/>
     </template>
     <template #fallback>
-      <LoadingSpinner />
+      <LoadingSpinner/>
     </template>
   </Suspense>
   <Toaster/>
-  <ImageViewer />
+  <ImageViewer/>
   <Footer/>
 </template>
 

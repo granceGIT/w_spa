@@ -22,7 +22,8 @@
           </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.alias}" placeholder="Описание"
+          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.description}"
+                 placeholder="Описание"
                  id="description"
                  name="description"
                  v-model="description">
@@ -32,11 +33,17 @@
           </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.alias}" placeholder="Краткое название"
+          <input type="text" class="form-control" :class="{'is-invalid':v$.alias.$error}" placeholder="Краткое название"
                  id="alias"
                  name="alias"
-                 v-model="alias">
+                 v-model="alias"
+                 @blur="v$.alias.$touch"
+          >
           <label for="alias">Краткое название</label>
+          <div class="client-errors">
+            <p class="invalid-text" v-if="v$.alias.$error && v$.alias.match.$invalid">Поле, длиной от 3 до 25 символов
+              может состоять из латинских букв, цифр и знака подчеркивания</p>
+          </div>
           <div class="server-errors" v-if="$externalResults.alias ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.alias" :key="error">{{ error }}</p>
           </div>
@@ -70,7 +77,7 @@
 
 <script setup>
 import {computed, ref} from "vue";
-import {required} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import useFormData from "@/use/useFormData";
 import {useFileDialog} from "@vueuse/core";
@@ -80,7 +87,7 @@ import ErrorHandler from "@/handlers/ErrorHandler";
 import CommunityService from "@/services/CommunityService";
 import {useRouter} from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 
 const name = ref("");
 const description = ref("");
@@ -94,8 +101,11 @@ const rules = computed(() => ({
   name: {
     required,
   },
+  alias: {
+    match: helpers.regex("/^[a-zA-Z]{1}[a-zA-Z\\d_]{2,24}$/"),
+  },
 }));
-const v$ = useVuelidate(rules, {name}, {$externalResults});
+const v$ = useVuelidate(rules, {name, alias}, {$externalResults});
 
 async function validate() {
   // Очистка ошибок сервера
@@ -105,7 +115,7 @@ async function validate() {
   if (res) {
     v$.value.$reset();
     resetForm();
-    await router.push(`/communities/${res.id}`)
+    await router.push(`/communities/${res.id}`);
   }
   $externalResults.value = res.errors ?? [];
 }
@@ -124,11 +134,10 @@ imageDialog.onChange((files) => {
 
 // Сброс
 const resetForm = () => {
-  imageDialog.reset();
-  name.value="";
-  description.value="";
-  alias.value="";
-  imagePreview.value = null;
+  resetNewImage();
+  name.value = "";
+  description.value = "";
+  alias.value = "";
 };
 
 const resetNewImage = () => {
@@ -139,19 +148,18 @@ const resetNewImage = () => {
 
 // Запрос на создание сообщества
 const createCommunityRequest = async () => {
-  try{
+  try {
     const fd = useFormData({
       name: name.value,
-      description:description.value,
-      alias:alias.value,
+      description: description.value,
+      alias: alias.value,
       image: image.value,
     });
     const res = await CommunityService.create(fd);
-    return res.data
-  }
-  catch(e){
-    ErrorHandler.handle(e)
-    return false
+    return res.data;
+  } catch (e) {
+    ErrorHandler.handle(e);
+    return false;
   }
 };
 </script>
@@ -200,7 +208,7 @@ const createCommunityRequest = async () => {
   position: relative;
 }
 
-.new-image{
+.new-image {
   transition: all .25s;
 }
 

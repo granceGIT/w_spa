@@ -61,11 +61,11 @@ import {useImageStore} from "@/stores/image";
 import {acceptImageTypes} from "@/validators/images";
 
 const props = defineProps({
-  community:{
-    type:Object,
-    default: ()=>({}),
-  }
-})
+  community: {
+    type: Object,
+    default: () => ({}),
+  },
+});
 
 const userStore = useUserStore();
 const postStore = usePostStore();
@@ -132,7 +132,7 @@ const resetForm = () => {
 
 // Запрос на создание поста
 const createPostRequest = async () => {
-  const fd = useFormData({content: content.value,community_id:props.community.id});
+  const fd = useFormData({content: content.value, community_id: props.community.id});
   for (const image of attachedImages.value) {
     fd.append("images[]", image);
   }

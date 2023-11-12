@@ -40,16 +40,16 @@ const toastStore = useToasterStore();
 const type = ref("all");
 
 const fetchPosts = async () => {
-  await postStore.updatePosts({type:type.value,page:1});
+  await postStore.updatePosts({type: type.value, page: 1});
 };
 
-const changeType = (t)=>{
-  type.value = t
-}
+const changeType = (t) => {
+  type.value = t;
+};
 
-watch(()=>type.value,async ()=>{
-  await postStore.updatePosts({type:type.value,page:1});
-})
+watch(() => type.value, async () => {
+  await postStore.updatePosts({type: type.value, page: 1});
+});
 
 const deletePost = async (id) => {
   const res = await postStore.deletePost(id);

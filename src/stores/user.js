@@ -84,7 +84,7 @@ export const useUserStore = defineStore("user", {
                 ErrorHandler.handle(e);
             }
         },
-        async subscribeToCommunity(communityId){
+        async subscribeToCommunity(communityId) {
             try {
                 const res = await UserService.subscribeRequest(communityId);
                 return res.data;
@@ -92,13 +92,13 @@ export const useUserStore = defineStore("user", {
                 ErrorHandler.handle(e);
             }
         },
-        async unsubscribeFromCommunity(communityId){
+        async unsubscribeFromCommunity(communityId) {
             try {
                 const res = await UserService.unsubscribeRequest(communityId);
                 return res.data;
             } catch (e) {
                 ErrorHandler.handle(e);
             }
-        }
+        },
     },
 });

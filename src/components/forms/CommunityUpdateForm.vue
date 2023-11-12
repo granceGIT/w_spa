@@ -32,11 +32,18 @@
           </div>
         </div>
         <div class="form-floating mb-2">
-          <input type="text" class="form-control" :class="{'is-invalid':$externalResults.alias}" placeholder="Краткое название"
+          <input type="text" class="form-control" :class="{'is-invalid':v$.alias.$error}" placeholder="Краткое название"
                  id="alias"
                  name="alias"
-                 v-model="alias">
+                 v-model="alias"
+                 @blur="v$.alias.$touch"
+          >
           <label for="alias">Краткое название</label>
+          <div class="client-errors">
+            <p class="invalid-text" v-if="v$.alias.$error && v$.alias.match.$invalid">
+              Поле, длиной от 3 до 25 символов может состоять из латинских букв, цифр и знака подчеркивания и может начинаться с буквы
+            </p>
+          </div>
           <div class="server-errors" v-if="$externalResults.alias ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.alias" :key="error">{{ error }}</p>
           </div>
@@ -82,7 +89,7 @@
 
 <script setup>
 import {computed, ref} from "vue";
-import {required} from "@vuelidate/validators";
+import {helpers, required} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import useFormData from "@/use/useFormData";
 import {useFileDialog} from "@vueuse/core";
@@ -116,8 +123,11 @@ const rules = computed(() => ({
   name: {
     required,
   },
+  alias:{
+    match:helpers.regex(/^[a-zA-Z]{1}[a-zA-Z\\d_]{2,24}$/)
+  }
 }));
-const v$ = useVuelidate(rules, {name}, {$externalResults});
+const v$ = useVuelidate(rules, {name,alias}, {$externalResults});
 
 async function validate() {
   // Очистка ошибок сервера

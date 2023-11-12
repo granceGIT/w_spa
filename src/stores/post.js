@@ -6,11 +6,11 @@ import ReactionService from "@/services/ReactionService";
 export const usePostStore = defineStore("post", {
     state: () => ({
         posts: [],
-        payload:{
-            page:1,
-            type:"all",
+        payload: {
+            page: 1,
+            type: "all",
         },
-        postLoader:true,
+        postLoader: true,
     }),
     actions: {
         async create(payload) {
@@ -33,8 +33,8 @@ export const usePostStore = defineStore("post", {
             }
         },
         async updatePosts(payload) {
-            this.postLoader = true
-            this.payload = payload
+            this.postLoader = true;
+            this.payload = payload;
             this.posts = await this._getPosts(payload);
         },
         async loadMore() {

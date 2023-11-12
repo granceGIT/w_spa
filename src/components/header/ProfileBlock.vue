@@ -2,7 +2,9 @@
   <div class="profile-manage ms-auto d-flex gap-1 align-items-center">
     <div class="notification-icon" v-if="userStore.isAuthenticated">
       <div class="dropdown-center">
-        <div data-bs-toggle="dropdown" type="button" aria-expanded="false"><NotificationIcon/></div>
+        <div data-bs-toggle="dropdown" type="button" aria-expanded="false">
+          <NotificationIcon/>
+        </div>
         <div class="dropdown-menu notifications-dropdown-content">
           <p class="mt-3 text-center">Тут должны быть уведомления :\</p>
         </div>
@@ -53,22 +55,21 @@ import NotificationIcon from "@/components/icons/NotificationIcon.vue";
 import {useRouter} from "vue-router";
 import {useDark, useToggle} from "@vueuse/core";
 
+const isRetro = useDark({
+  selector: "body",
+  attribute: "color-style",
+  valueDark: "retro",
+  initialValue: "light",
+  storageKey: "style",
+});
 const isDark = useDark({
-  listenToStorageChanges:false,
   selector: "body",
   attribute: "color-scheme",
   valueDark: "dark",
   valueLight: "light",
+  storageKey: "theme",
 });
 const toggleDark = useToggle(isDark);
-
-const isRetro = useDark({
-  listenToStorageChanges:false,
-  selector: "body",
-  attribute: "color-style",
-  valueDark: "retro",
-  initialValue:"light",
-});
 const toggleStyle = useToggle(isRetro);
 
 const userStore = useUserStore();
@@ -89,14 +90,14 @@ const logout = async () => {
   cursor: pointer;
 }
 
-.notifications-dropdown-content{
+.notifications-dropdown-content {
   padding: 9px;
   min-height: 10ch;
   width: 40ch;
-  border:1px solid var(--clr-primary);
+  border: 1px solid var(--clr-primary);
 }
 
-.notifications-dropdown-content>p{
+.notifications-dropdown-content > p {
   color: var(--clr-text-alt);
 }
 </style>

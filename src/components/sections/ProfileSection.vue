@@ -1,14 +1,14 @@
 <template>
   <section class="page-section profile-section p-0">
 
-      <Suspense>
-        <template #fallback>
-          <LoadingSpinner/>
-        </template>
-        <template #default>
-          <ProfileSectionHeader :user="user"/>
-        </template>
-      </Suspense>
+    <Suspense>
+      <template #fallback>
+        <LoadingSpinner/>
+      </template>
+      <template #default>
+        <ProfileSectionHeader :user="user"/>
+      </template>
+    </Suspense>
     <div v-if="!userStore.isAuthenticated"
          class="profile-actions d-flex align-items-center justify-content-around gap-1">
       <RouterLink to="/login" class="btn btn-primary">Добавить в друзья</RouterLink>
@@ -98,7 +98,7 @@ const tabs = [
   color: var(--clr-text);
 }
 
-.profile-header,.profile-actions{
+.profile-header, .profile-actions {
   padding: 9px;
 }
 

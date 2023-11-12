@@ -1,7 +1,7 @@
 <template>
   <header class="header" id="header">
     <div class="container">
-      <div class="header-content d-flex align-items-center gap-5">
+      <div class="header-content d-flex align-items-center gap-5 py-2">
         <RouterLink to="/" class="logo">W</RouterLink>
         <SearchBlock/>
         <ProfileBlock/>
@@ -17,9 +17,7 @@ import SearchBlock from "@/components/header/SearchBlock.vue";
 
 <style scoped>
 #header {
-  padding: 9px;
   background-color: var(--clr-background);
-  max-height: 70px;
   line-height: 1;
 }
 

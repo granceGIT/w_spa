@@ -9,17 +9,17 @@
 
 <script setup>
 const props = defineProps({
-  contributors:{
-    type:Array,
-    required:true,
-  }
-})
+  contributors: {
+    type: Array,
+    required: true,
+  },
+});
 
 import CommunityContributorItem from "@/components/community/CommunityContributorItem.vue";
 </script>
 
 <style scoped>
-.community-contributors{
+.community-contributors {
   border-top: 1px solid var(--clr-text-alt);
   font-size: var(--fz-larger);
   text-align: center;
