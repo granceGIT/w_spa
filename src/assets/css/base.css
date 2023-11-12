@@ -10,7 +10,7 @@
 
 :root {
     --clr-primary: #55b1c4;
-    --clr-secondary: #55b1c4;
+    --clr-secondary: #8daeb4;
     --clr-transparent: #00000000;
     --clr-dark: #222324;
     --clr-light: #ffffff;
@@ -38,6 +38,16 @@ body{
     color: var(--clr-text);
 }
 
+body[color-style=retro] {
+    --clr-primary: #776B5D;
+    --clr-secondary: #B0A695;
+
+    --clr-background: #f6f4f0;
+    --clr-background-alt: #efeadf;
+    --clr-text: #222324;
+    --clr-text-alt: #6f6f6f;
+}
+
 body[color-scheme=dark] {
     --clr-background: #252525;
     --clr-background-alt: #181818;
@@ -46,6 +56,8 @@ body[color-scheme=dark] {
 
     color-scheme: dark;
 }
+
+
 
 body.scroll-lock{
     overflow: hidden;

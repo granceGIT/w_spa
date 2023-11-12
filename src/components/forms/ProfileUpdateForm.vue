@@ -1,6 +1,6 @@
 <template>
   <section class="page-section auth-section">
-    <form action="#" @submit.prevent="validate" class="auth-form d-flex flex-column gap-3" novalidate>
+    <form action="#" @submit.prevent="validate" class="manage-form d-flex flex-column gap-3" novalidate>
       <div class="form-header">
         <div class="form-header-title text-center">Изменение данных профиля</div>
       </div>
@@ -42,8 +42,7 @@
                  placeholder="Дата рождения"
                  id="birthdate"
                  name="birthdate"
-                 v-model="birthdate"
-                 required>
+                 v-model="birthdate">
           <label for="birthdate">Дата рождения</label>
           <div class="server-errors" v-if="$externalResults.birthdate ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.birthdate" :key="error">{{ error }}</p>
@@ -53,8 +52,7 @@
           <input type="text" class="form-control" :class="{'is-invalid':$externalResults.status}" placeholder="Статус"
                  id="status"
                  name="status"
-                 v-model="status"
-                 required>
+                 v-model="status">
           <label for="status">Статус</label>
           <div class="server-errors" v-if="$externalResults.status ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.status" :key="error">{{ error }}</p>
@@ -64,8 +62,7 @@
           <input type="text" class="form-control" :class="{'is-invalid':$externalResults.job}" placeholder="Профессия"
                  id="job"
                  name="job"
-                 v-model="job"
-                 required>
+                 v-model="job">
           <label for="job">Профессия</label>
           <div class="server-errors" v-if="$externalResults.job ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.job" :key="error">{{ error }}</p>
@@ -76,8 +73,7 @@
                  placeholder="Образование"
                  id="education"
                  name="education"
-                 v-model="education"
-                 required>
+                 v-model="education">
           <label for="education">Образование</label>
           <div class="server-errors" v-if="$externalResults.education ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.education" :key="error">{{ error }}</p>
@@ -87,8 +83,7 @@
           <input type="text" class="form-control" :class="{'is-invalid':$externalResults.country}" placeholder="Страна"
                  id="country"
                  name="country"
-                 v-model="country"
-                 required>
+                 v-model="country">
           <label for="country">Страна</label>
           <div class="server-errors" v-if="$externalResults.country ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.country" :key="error">{{ error }}</p>
@@ -98,8 +93,7 @@
           <input type="text" class="form-control" :class="{'is-invalid':$externalResults.city}" placeholder="Город"
                  id="city"
                  name="city"
-                 v-model="city"
-                 required>
+                 v-model="city">
           <label for="city">Город</label>
           <div class="server-errors" v-if="$externalResults.city ?? []">
             <p class="invalid-text mb-1 p-0" v-for="error in $externalResults.city" :key="error">{{ error }}</p>
@@ -110,8 +104,7 @@
                  placeholder="Новый пароль"
                  id="new_password"
                  name="new_password"
-                 v-model="new_password"
-                 required>
+                 v-model="new_password">
           <label for="new_password">Новый пароль</label>
           <div class="client-errors">
             <p class="invalid-text mb-1 p-0" v-if="v$.new_password.$error && v$.new_password.minLength.$invalid">
@@ -281,19 +274,19 @@ const updateProfileData = async () => {
 </script>
 
 <style scoped>
-.auth-form .form-header-title {
+.manage-form .form-header-title {
   font-size: 1.5rem;
 }
 
-.auth-form .form-control {
+.manage-form .form-control {
   background-color: var(--clr-background-alt);
 }
 
-.auth-form label::after {
+.manage-form label::after {
   background-color: var(--clr-transparent) !important;
 }
 
-.auth-form p.invalid-text {
+.manage-form p.invalid-text {
   color: var(--bs-danger);
 }
 

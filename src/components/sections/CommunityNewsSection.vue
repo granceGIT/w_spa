@@ -5,7 +5,7 @@
           :post="post"
           @delete="deletePost"
     />
-    <IntersectionObserver v-if="postLoader" :listen="postLoader" @intersect="loadMorePosts"/>
+    <IntersectionObserver v-if="postStore.postLoader" :listen="postStore.postLoader" @intersect="postStore.loadMore"/>
     <ContentNotFound class="h-auto my-4" title="Дальше ничего нет" text="Вы просмотрели все новости" v-else />
   </section>
 
@@ -26,17 +26,10 @@ import IntersectionObserver from "@/components/IntersectionObserver.vue";
 const toastStore = useToasterStore();
 const postStore = usePostStore();
 const route = useRoute();
-const page = ref(1);
 const communityId = ref(Number(route.params.id));
-const postLoader = ref(true);
 
 const fetchPosts = async () => {
-  await postStore.updatePosts({type:"community",id:communityId.value,page:page.value});
-};
-
-const loadMorePosts = async () => {
-  const res = await postStore.loadMore({type:"community",id:communityId.value,page:++page.value});
-  if (!res) postLoader.value = false;
+  await postStore.updatePosts({type:"community",id:communityId.value,page:1});
 };
 
 const deletePost = async (id) => {

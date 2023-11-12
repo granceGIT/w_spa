@@ -17,6 +17,14 @@ export default class UserService {
         return api.post("/profile/addFriend", {user_id: userId});
     }
 
+    static async subscribeRequest(communityId) {
+        return api.get(`/communities/${communityId}/subscribe`);
+    }
+
+    static async unsubscribeRequest(communityId) {
+        return api.get(`/communities/${communityId}/unsubscribe`);
+    }
+
     static async search(data) {
         return api.get(`/users?search=${data}`);
     }

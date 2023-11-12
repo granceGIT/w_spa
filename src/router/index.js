@@ -6,6 +6,8 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import {useUserStore} from "@/stores/user";
 import ProfileUpdateView from "@/views/ProfileUpdateView.vue";
+import CommunityUpdateView from "@/views/CommunityUpdateView.vue";
+import CommunityCreateView from "@/views/CommunityCreateView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,11 +37,27 @@ const router = createRouter({
             },
         },
         {
+            path: "/communities/create",
+            name: "createCommunity",
+            component: CommunityCreateView,
+            meta: {
+                title: "Новое сообщество",
+            },
+        },
+        {
             path: "/communities/:id",
             name: "community",
             component: CommunityView,
             meta: {
                 title: "Сообщество",
+            },
+        },
+        {
+            path: "/communities/:id/update",
+            name: "updateCommunity",
+            component: CommunityUpdateView,
+            meta: {
+                title: "Изменение данных сообщества",
             },
         },
         {

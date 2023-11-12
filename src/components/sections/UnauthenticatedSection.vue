@@ -11,7 +11,6 @@
         <li>Добавить друзей</li>
         <li>Подписаться на любимые сообщества</li>
         <li>Отслеживать новости друзей и сообществ</li>
-        <li>Создать свой альбом и загрузить в него фото</li>
       </ul>
     </div>
     <div class="banner-actions d-flex align-items-center justify-content-center gap-2">

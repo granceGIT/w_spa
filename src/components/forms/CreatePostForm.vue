@@ -1,7 +1,13 @@
 <template>
   <form action="#" @submit.prevent="validate" enctype="multipart/form-data" class="create-post-form">
     <div class="create-post-header d-flex gap-3">
-      <div class="create-post-profile-image">
+      <div class="create-post-profile-image" v-if="Object.keys(community).length">
+        <div class="user-image">
+          <img v-if="props.community.image" :src="props.community.image" alt="Изображение сообщества" class="img-cover">
+          <UserAvatarIcon v-else/>
+        </div>
+      </div>
+      <div class="create-post-profile-image" v-else>
         <div class="user-image">
           <img v-if="userStore.user.image" :src="userStore.user.image" alt="Изображение профиля" class="img-cover">
           <UserAvatarIcon v-else/>
@@ -12,6 +18,7 @@
                 id="new-post-text"
                 name="new-post-text"
                 v-model="content"
+                maxlength="1000"
                 placeholder="Расскажите как ваши дела?"></textarea>
     </div>
     <div v-if="attachedImages.length" class="create-post-main d-flex flex-wrap gap-2">
@@ -53,13 +60,19 @@ import useFormData from "@/use/useFormData";
 import {useImageStore} from "@/stores/image";
 import {acceptImageTypes} from "@/validators/images";
 
+const props = defineProps({
+  community:{
+    type:Object,
+    default: ()=>({}),
+  }
+})
+
 const userStore = useUserStore();
 const postStore = usePostStore();
 const toastStore = useToasterStore();
 const imageStore = useImageStore();
 
 // TODO: Обработка ввода ссылок в поле content (?)
-// TODO: Обработка многострочного ввода в поле content (?)
 const content = ref("");
 const attachedImages = ref([]);
 const attachedImagesPreview = ref(null);
@@ -76,6 +89,7 @@ const v$ = useVuelidate(rules, {content}, {$externalResults});
 async function validate() {
   // Очистка ошибок сервера
   v$.value.$clearExternalResults();
+  if (!await v$.value.$validate()) return;
   const res = await createPostRequest();
   if (res === true) {
     v$.value.$reset();
@@ -118,7 +132,7 @@ const resetForm = () => {
 
 // Запрос на создание поста
 const createPostRequest = async () => {
-  const fd = useFormData({content: content.value});
+  const fd = useFormData({content: content.value,community_id:props.community.id});
   for (const image of attachedImages.value) {
     fd.append("images[]", image);
   }

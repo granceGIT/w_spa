@@ -1,7 +1,12 @@
 <template>
   <div class="profile-manage ms-auto d-flex gap-1 align-items-center">
     <div class="notification-icon" v-if="userStore.isAuthenticated">
-      <NotificationIcon/>
+      <div class="dropdown-center">
+        <div data-bs-toggle="dropdown" type="button" aria-expanded="false"><NotificationIcon/></div>
+        <div class="dropdown-menu notifications-dropdown-content">
+          <p class="mt-3 text-center">Тут должны быть уведомления :\</p>
+        </div>
+      </div>
     </div>
     <div class="dropdown" v-if="userStore.isAuthenticated">
       <div class="user-image" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -16,6 +21,7 @@
           <RouterLink to="/profile/update" class="dropdown-item">Изменить данные</RouterLink>
         </li>
         <li><span class="dropdown-item" @click="toggleDark()">Сменить тему</span></li>
+        <li><span class="dropdown-item" @click="toggleStyle()">Сменить стиль</span></li>
         <li>
           <button class="dropdown-item" @click="logout">Выйти</button>
         </li>
@@ -34,6 +40,7 @@
           <RouterLink to="/register" class="dropdown-item">Регистрация</RouterLink>
         </li>
         <li><span class="dropdown-item" @click="toggleDark()">Сменить тему</span></li>
+        <li><span class="dropdown-item" @click="toggleStyle()">Сменить стиль</span></li>
       </ul>
     </div>
   </div>
@@ -47,12 +54,22 @@ import {useRouter} from "vue-router";
 import {useDark, useToggle} from "@vueuse/core";
 
 const isDark = useDark({
+  listenToStorageChanges:false,
   selector: "body",
   attribute: "color-scheme",
   valueDark: "dark",
   valueLight: "light",
 });
 const toggleDark = useToggle(isDark);
+
+const isRetro = useDark({
+  listenToStorageChanges:false,
+  selector: "body",
+  attribute: "color-style",
+  valueDark: "retro",
+  initialValue:"light",
+});
+const toggleStyle = useToggle(isRetro);
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -70,5 +87,16 @@ const logout = async () => {
   width: 2.5rem;
   height: 2.2rem;
   cursor: pointer;
+}
+
+.notifications-dropdown-content{
+  padding: 9px;
+  min-height: 10ch;
+  width: 40ch;
+  border:1px solid var(--clr-primary);
+}
+
+.notifications-dropdown-content>p{
+  color: var(--clr-text-alt);
 }
 </style>

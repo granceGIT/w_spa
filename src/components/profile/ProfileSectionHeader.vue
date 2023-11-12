@@ -1,14 +1,17 @@
 <template>
-  <div class="profile-header-image">
-    <div class="user-image">
-      <img v-if="props.user.image" :src="props.user.image" alt="Изображение профиля" class="img-cover">
-      <UserAvatarIcon v-else/>
+  <RouterLink :to="`/users/${props.user.id}`" class="text-decoration-none profile-header d-flex align-items-center gap-3">
+    <div class="profile-header-image">
+      <div class="user-image">
+        <img v-if="props.user.image" :src="props.user.image" alt="Изображение профиля" class="img-cover">
+        <UserAvatarIcon v-else/>
+      </div>
     </div>
-  </div>
-  <div class="profile-header-info d-flex flex-column">
-    <h2 class="profile-header-title">{{ props.user.name }} {{ props.user.surname }}</h2>
-    <h3 class="profile-header-subtitle">{{ props.user.status }}</h3>
-  </div>
+    <div class="profile-header-info d-flex flex-column">
+      <h2 class="profile-header-title">{{ props.user.name }} {{ props.user.surname }}</h2>
+      <h3 class="profile-header-subtitle">{{ props.user.status }}</h3>
+    </div>
+  </RouterLink>
+
 </template>
 
 <script setup>
@@ -33,7 +36,7 @@ const props = defineProps({
   font-size: var(--fz-extra-large);
 }
 
-.user-image{
+.user-image {
   width: 5rem;
   height: 5rem;
 }

@@ -219,7 +219,7 @@ const resetForm = () => {
 }
 
 .auth-form p.invalid-text {
-  color: var(--bs-danger-text-emphasis);
+  color: var(--bs-danger);
 }
 
 .auth-form .server-errors,

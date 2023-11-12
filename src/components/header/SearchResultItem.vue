@@ -1,8 +1,8 @@
 <template>
   <RouterLink :to="`/users/${props.user.id}`"
               class="search-result-item mb-2 d-flex align-items-center gap-2 text-decoration-none">
-    <div class="image-block">
-      <img v-if="props.user.image" :src="props.user.image" alt="profile image">
+    <div class="user-image">
+      <img v-if="props.user.image" :src="props.user.image" alt="profile image" class="img-cover">
       <UserAvatarIcon v-else/>
     </div>
     <div class="info-block d-flex flex-column">
@@ -34,10 +34,9 @@ const props = defineProps({
   background-color: var(--clr-background-alt);
 }
 
-.image-block {
+.user-image {
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 50%;
 }
 
 .info-block-title {

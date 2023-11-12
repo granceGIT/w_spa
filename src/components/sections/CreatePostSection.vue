@@ -1,6 +1,6 @@
 <template>
   <section class="page-section create-post-section" v-if="userStore.isAuthenticated">
-    <CreatePostForm/>
+    <CreatePostForm :community="props.community"/>
   </section>
 </template>
 
@@ -8,6 +8,12 @@
 import {useUserStore} from "@/stores/user";
 import CreatePostForm from "@/components/forms/CreatePostForm.vue";
 
+const props = defineProps({
+  community:{
+    type:Object,
+    default:()=>({}),
+  }
+})
 const userStore = useUserStore();
 </script>
 

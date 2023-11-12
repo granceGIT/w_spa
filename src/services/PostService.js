@@ -5,10 +5,10 @@ export default class PostService {
         "all": ({page = 1}) => `/posts?page=${page}`,
         "one": ({id}) => `/posts/${id}`,
         "user": ({id, page = 1}) => `/users/${id}/posts?page=${page}`,
-        "users": ({page = 1}) => `/posts?page=${page}`,
+        "users": ({page = 1}) => `/myFriendsPosts?page=${page}`,
         "community": ({id, page = 1}) => `/communities/${id}/posts?page=${page}`,
-        "communities": ({page = 1}) => `/posts?page=${page}`,
-        "reactions": ({page = 1}) => `/posts?page=${page}`,
+        "communities": ({page = 1}) => `/mySubscribedPosts?page=${page}`,
+        "reactions": ({page = 1}) => `/myPostReactions?page=${page}`,
     };
 
     static async create(payload) {
